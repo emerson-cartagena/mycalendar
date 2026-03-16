@@ -17,6 +17,19 @@ interface RequestBody {
 }
 
 serve(async (req: Request) => {
+  // Manejar CORS preflight
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Max-Age": "86400",
+      },
+    });
+  }
+
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
@@ -45,7 +58,13 @@ serve(async (req: Request) => {
     if (!ownerEmail || !attendeeName || !attendeeEmail || !eventTitle) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { 
+          status: 400, 
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          } 
+        }
       );
     }
 
@@ -53,7 +72,13 @@ serve(async (req: Request) => {
       console.error("RESEND_API_KEY not configured");
       return new Response(
         JSON.stringify({ error: "RESEND_API_KEY not configured" }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
+        { 
+          status: 500, 
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          } 
+        }
       );
     }
 
@@ -191,7 +216,10 @@ serve(async (req: Request) => {
       JSON.stringify({ success: true, message: "Emails sent successfully" }),
       {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
       }
     );
   } catch (error) {
@@ -200,7 +228,13 @@ serve(async (req: Request) => {
       JSON.stringify({
         error: error instanceof Error ? error.message : "Internal error",
       }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { 
+        status: 500, 
+        headers: { 
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        } 
+      }
     );
   }
 });

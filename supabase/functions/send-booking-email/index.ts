@@ -402,9 +402,9 @@ serve(async (req: Request) => {
             Authorization: `Bearer ${RESEND_API_KEY}`,
           },
           body: JSON.stringify({
-            from: "noreply@mycalendar.pro",
+            from: "My Calendar <noreply@mycalendar.pro>",
             to: ownerEmail,
-            subject: `📅 Reserva Reprogramada - ${eventTitle}`,
+            subject: `Reserva Reprogramada - ${eventTitle}`,
             html: ownerEmailContent,
           }),
         });
@@ -436,9 +436,9 @@ serve(async (req: Request) => {
                   Authorization: `Bearer ${RESEND_API_KEY}`,
                 },
                 body: JSON.stringify({
-                  from: "noreply@mycalendar.pro",
+                  from: "My Calendar <noreply@mycalendar.pro>",
                   to: guestEmail,
-                  subject: `📅 Cambio de horario - ${eventTitle}`,
+                  subject: `Cambio de horario - ${eventTitle}`,
                   html: guestEmailContent,
                 }),
               });
@@ -468,9 +468,9 @@ serve(async (req: Request) => {
           Authorization: `Bearer ${RESEND_API_KEY}`,
         },
         body: JSON.stringify({
-          from: "noreply@mycalendar.pro",
+          from: "My Calendar <noreply@mycalendar.pro>",
           to: attendeeEmail,
-          subject: `${type === "cancel" ? "❌ Reserva Cancelada" : "📅 Reserva Reprogramada"} - ${eventTitle}`,
+          subject: `${type === "cancel" ? "Reserva Cancelada" : "Reserva Reprogramada"} - ${eventTitle}`,
           html: attendeeEmailContent,
         }),
       });
@@ -502,9 +502,9 @@ serve(async (req: Request) => {
                 Authorization: `Bearer ${RESEND_API_KEY}`,
               },
               body: JSON.stringify({
-                from: "noreply@mycalendar.pro",
-                to: guestEmail,
-                subject: `${type === "cancel" ? "❌ Reunión Cancelada" : "📅 Cambio de Horario"} - ${eventTitle}`,
+              from: "My Calendar <noreply@mycalendar.pro>",
+              to: guestEmail,
+              subject: `${type === "cancel" ? "Reunión Cancelada" : "Cambio de Horario"} - ${eventTitle}`,
                 html: guestEmailContent,
               }),
             });
@@ -531,9 +531,9 @@ serve(async (req: Request) => {
           Authorization: `Bearer ${RESEND_API_KEY}`,
         },
         body: JSON.stringify({
-          from: "noreply@mycalendar.pro",
+          from: "My Calendar <noreply@mycalendar.pro>",
           to: attendeeEmail,
-          subject: `${type === "booking" ? "✓ Confirmación de Reserva" : type === "reschedule" ? "📅 Reserva Reprogramada" : "❌ Reserva Cancelada"} - ${eventTitle}`,
+          subject: `${type === "booking" ? "Confirmación de Reserva" : type === "reschedule" ? "Reserva Reprogramada" : "Reserva Cancelada"} - ${eventTitle}`,
           html: attendeeEmailContent,
         }),
       });
@@ -562,9 +562,9 @@ serve(async (req: Request) => {
             Authorization: `Bearer ${RESEND_API_KEY}`,
           },
           body: JSON.stringify({
-            from: "noreply@mycalendar.pro",
+            from: "My Calendar <noreply@mycalendar.pro>",
             to: ownerEmail,
-            subject: `📅 Nueva Reserva - ${eventTitle}`,
+            subject: `Nueva Reserva - ${eventTitle}`,
             html: ownerNotificationContent,
           }),
         });
@@ -597,9 +597,9 @@ serve(async (req: Request) => {
                 Authorization: `Bearer ${RESEND_API_KEY}`,
               },
               body: JSON.stringify({
-                from: "noreply@mycalendar.pro",
+                from: "My Calendar <noreply@mycalendar.pro>",
                 to: guestEmail,
-                subject: `📅 Te han invitado a una reunión - ${eventTitle}`,
+              subject: `Te han invitado a una reunión - ${eventTitle}`,
                 html: guestEmailContent,
               }),
             });

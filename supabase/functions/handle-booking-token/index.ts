@@ -195,15 +195,15 @@ serve(async (req: Request) => {
                 Authorization: `Bearer ${RESEND_API_KEY}`,
               },
               body: JSON.stringify({
-                from: "noreply@mycalendar.pro",
+                from: "My Calendar <noreply@mycalendar.pro>",
                 to: ownerData.email,
-                subject: `❌ Cancelación de Reserva - ${eventData.title}`,
+                subject: `Cancelación de Reserva - ${eventData.title}`,
                 html: `
                   <!DOCTYPE html>
                   <html>
                   <body style="font-family: Arial, sans-serif; color: #333;">
                     <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                      <h2 style="color: #dc3545; margin-bottom: 24px;">❌ Cancelación de Reserva</h2>
+                      <h2 style="color: #dc3545; margin-bottom: 24px;">Cancelación de Reserva</h2>
                       <p>La reserva de <strong>${booking.attendee_name}</strong> para <strong>${eventData.title}</strong> ha sido cancelada.</p>
                       <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 24px 0;">
                         <p style="margin: 8px 0;"><strong>Asistente:</strong> ${booking.attendee_name}</p>
@@ -230,18 +230,17 @@ serve(async (req: Request) => {
                     Authorization: `Bearer ${RESEND_API_KEY}`,
                   },
                   body: JSON.stringify({
-                    from: "noreply@mycalendar.pro",
+                    from: "My Calendar <noreply@mycalendar.pro>",
                     to: guestEmail,
-                    subject: `❌ Cancelación de Reunión - ${eventData.title}`,
+                    subject: `Cancelación de Reunión - ${eventData.title}`,
                     html: `
                       <!DOCTYPE html>
                       <html>
                       <body style="font-family: Arial, sans-serif; color: #333;">
                         <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                          <h2 style="color: #dc3545; margin-bottom: 24px;">❌ Reunión Cancelada</h2>
+                          <h2 style="color: #dc3545; margin-bottom: 24px;">Reunión Cancelada</h2>
                           <p>La reunión <strong>${eventData.title}</strong> ha sido cancelada.</p>
                           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 24px 0;">
-                            <p style="margin: 8px 0;"><strong>Fecha/Hora original:</strong> ${booking.slot_datetime}</p>
                           </div>
                           <p style="margin-top: 24px; color: #999; font-size: 12px;">
                             © 2026 MyCalendar. Todos los derechos reservados.

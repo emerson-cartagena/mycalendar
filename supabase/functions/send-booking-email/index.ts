@@ -182,7 +182,7 @@ serve(async (req: Request) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "noreply@meetsv.com",
+        from: "onboarding@resend.dev",
         to: ownerEmail,
         subject: `${type === "booking" ? "Nueva Reserva" : type === "reschedule" ? "Cambio de Reserva" : "Reserva Cancelada"} - ${eventTitle}`,
         html: ownerEmailContent,
@@ -207,7 +207,7 @@ serve(async (req: Request) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "noreply@meetsv.com",
+        from: "onboarding@resend.dev",
         to: attendeeEmail,
         subject: `${type === "booking" ? "Confirmación de Reserva" : type === "reschedule" ? "Reserva Reprogramada" : "Cancelación de Reserva"} - ${eventTitle}`,
         html: attendeeEmailContent,

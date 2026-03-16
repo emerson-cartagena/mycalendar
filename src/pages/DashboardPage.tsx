@@ -10,7 +10,7 @@ import { getEventStatus } from '../lib/date'
 
 export default function DashboardPage() {
   const navigate = useNavigate()
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   const [events, setEvents] = useState<Event[]>([])
   const [owners, setOwners] = useState<Map<string, string>>(new Map())
   const [loading, setLoading] = useState(true)
@@ -79,11 +79,6 @@ export default function DashboardPage() {
     } finally {
       setDeleting(null)
     }
-  }
-
-  async function handleLogout() {
-    await logout()
-    navigate('/login')
   }
 
   if (!user) return null

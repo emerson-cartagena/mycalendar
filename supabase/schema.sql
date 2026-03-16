@@ -156,10 +156,14 @@ create policy "booking_changes_insert"
   with check (true);  -- Permisivo: validación en frontend
 
 -- BOOKING_TOKENS:
---   - SELECT/UPDATE: Público (se accede por token, validación en backend)
+--   - SELECT/UPDATE/INSERT: Público (se accede por token, validación en backend)
 create policy "booking_tokens_select"
   on public.booking_tokens for select
   using (true);  -- Público: validación en Edge Function
+
+create policy "booking_tokens_insert"
+  on public.booking_tokens for insert
+  with check (true);  -- Público: validación en Edge Function
 
 create policy "booking_tokens_update"
   on public.booking_tokens for update

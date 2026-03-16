@@ -108,6 +108,50 @@ export default function BookingWidget({ event, slots, onBooked, embedded = false
       if (error) throw error
 
       const booking = data as Booking
+      
+      // Obtener email del owner del evento
+      const { data: eventData } = await supabase
+        .from('events')
+        .select('user_id')
+        .eq('id', event.id)
+        .single()
+
+      if (eventData) {
+        const { data: ownerData } = await supabase
+          .from('users')
+          .select('email')
+          .eq('id', eventData.user_id)
+          .single()
+
+        if (ownerData) {
+          // Llamar a la Edge Function para enviar emails
+          try {
+            await fetch(
+              'https://vrggahqfapozygajklaj.functions.supabase.co/send-booking-email',
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyZ2dhaHFmYXBvenlnYWprbGFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjM1NzEsImV4cCI6MjA4OTIzOTU3MX0.dhtfPeaINYmdMEDKm8t1g-fAQi_3G3OUwOaTl2f-0dw`,
+                },
+                body: JSON.stringify({
+                  ownerEmail: ownerData.email,
+                  attendeeName: form.name.trim(),
+                  attendeeEmail: form.email.trim().toLowerCase(),
+                  slot: selected.datetime,
+                  eventTitle: event.title,
+                  eventId: event.id,
+                  locationUrl: event.location_url,
+                }),
+              }
+            )
+          } catch (emailErr) {
+            console.error('Error sending email:', emailErr)
+            // No lanzamos error, el booking ya se creó
+          }
+        }
+      }
+
       onBooked(booking)
       setConfirmedBooking(booking)
       setStep('success')

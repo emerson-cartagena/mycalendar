@@ -9,6 +9,7 @@ import ManageEventPage from './pages/ManageEventPage'
 import AdminPanelPage from './pages/AdminPanelPage'
 import BookingPage from './pages/BookingPage'
 import EmbedPage from './pages/EmbedPage'
+import BookingActionPage from './pages/BookingActionPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
@@ -29,6 +30,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/book/:eventSlug" element={<BookingPage />} />
           <Route path="/embed/:eventSlug" element={<EmbedPage />} />
+          <Route path="/booking-action" element={<BookingActionPage />} />
 
           {/* Protected routes */}
           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />

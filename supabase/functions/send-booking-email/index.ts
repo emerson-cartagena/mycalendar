@@ -188,7 +188,7 @@ serve(async (req: Request) => {
             subject: `${type === "booking" ? "Nueva Reserva" : type === "reschedule" ? "Cambio de Reserva" : "Reserva Cancelada"} - ${eventTitle}`,
           },
         ],
-        from: { email: "noreply@sendgrid.net" },
+        from: { email: "noreply@mycalendar.pro" },
         content: [
           {
             type: "text/html",
@@ -222,7 +222,7 @@ serve(async (req: Request) => {
             subject: `${type === "booking" ? "Confirmación de Reserva" : type === "reschedule" ? "Reserva Reprogramada" : "Cancelación de Reserva"} - ${eventTitle}`,
           },
         ],
-        from: { email: "noreply@sendgrid.net" },
+        from: { email: "noreply@mycalendar.pro" },
         content: [
           {
             type: "text/html",

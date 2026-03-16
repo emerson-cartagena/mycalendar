@@ -82,6 +82,10 @@ serve(async (req: Request) => {
       );
     }
 
+    console.log("RESEND_API_KEY is available, length:", RESEND_API_KEY.length);
+    console.log("RESEND_API_KEY preview:", RESEND_API_KEY.substring(0, 10) + "...");
+    console.log("Email configuration:", { ownerEmail, attendeeName, attendeeEmail, eventTitle, slot, type });
+
     const slotDate = new Date(slot);
     const formattedSlot = slotDate.toLocaleDateString("es-SV", {
       weekday: "long",
@@ -185,9 +189,13 @@ serve(async (req: Request) => {
       }),
     });
 
+    console.log("Owner email response:", ownerEmailResponse.status);
+    const ownerEmailText = await ownerEmailResponse.text();
+    console.log("Owner email response body:", ownerEmailText);
+
     if (!ownerEmailResponse.ok) {
       throw new Error(
-        `Failed to send owner email: ${ownerEmailResponse.statusText}`
+        `Failed to send owner email: ${ownerEmailResponse.status} ${ownerEmailText}`
       );
     }
 
@@ -206,9 +214,13 @@ serve(async (req: Request) => {
       }),
     });
 
+    console.log("Attendee email response:", attendeeEmailResponse.status);
+    const attendeeEmailText = await attendeeEmailResponse.text();
+    console.log("Attendee email response body:", attendeeEmailText);
+
     if (!attendeeEmailResponse.ok) {
       throw new Error(
-        `Failed to send attendee email: ${attendeeEmailResponse.statusText}`
+        `Failed to send attendee email: ${attendeeEmailResponse.status} ${attendeeEmailText}`
       );
     }
 

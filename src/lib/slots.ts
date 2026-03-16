@@ -10,9 +10,13 @@ import {
 import { es } from 'date-fns/locale'
 import type { Event, Slot, Booking } from '../types'
 
+// Minutos mínimos antes del inicio para permitir una reserva
+const BOOKING_ADVANCE_MINUTES = 5
+
 /**
  * Genera todos los slots disponibles para un evento dado el listado de
  * reservas ya existentes (slot_datetime strings).
+ * No muestra slots que ya han comenzado o que faltan menos de BOOKING_ADVANCE_MINUTES para comenzar.
  */
 export function generateSlots(event: Event, bookedDatetimes: string[] | Booking[]): Slot[] {
   // Normalizar input: si es Booking[], extraer los slot_datetime
@@ -21,6 +25,7 @@ export function generateSlots(event: Event, bookedDatetimes: string[] | Booking[
     : bookedDatetimes
   
   const bookedSet = new Set(dateStrings)
+  const now = new Date()
 
   const days = eachDayOfInterval({
     start: parseISO(event.date_start),
@@ -45,13 +50,17 @@ export function generateSlots(event: Event, bookedDatetimes: string[] | Booking[
       const next = addMinutes(cursor, event.slot_duration_minutes)
       if (isBefore(endTime, next)) break // el último slot no cabe completo
 
+      // Verificar si el slot ya pasó o falta menos de BOOKING_ADVANCE_MINUTES
+      const minTimeToBook = addMinutes(now, BOOKING_ADVANCE_MINUTES)
+      const isPast = isBefore(cursor, minTimeToBook)
+
       const isoLocal = format(cursor, "yyyy-MM-dd'T'HH:mm:ss")
       const label = format(cursor, "EEE d MMM · h:mm aa", { locale: es })
 
       slots.push({
         datetime: isoLocal,
         label,
-        available: !bookedSet.has(isoLocal),
+        available: !bookedSet.has(isoLocal) && !isPast,
       })
 
       cursor = next

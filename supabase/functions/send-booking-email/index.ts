@@ -7,6 +7,7 @@ const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") || "";
 
 interface RequestBody {
   ownerEmail: string;
+  ownerName?: string;
   attendeeName: string;
   attendeeEmail: string;
   eventTitle: string;
@@ -160,6 +161,7 @@ function getEmailTemplate(
 </html>`;
   } else if (type === "guest-notification") {
     // Email para invitados adicionales (sin botones de acción)
+    // data.attendeeName aquí contiene el nombre de quien hizo la reserva
     return `<!DOCTYPE html>
 <html>
 <head>
@@ -168,19 +170,52 @@ function getEmailTemplate(
 </head>
 <body style="${baseStyles}">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-    <h2 style="color: #2c3e50; margin-bottom: 24px;">📅 Te han Invitado a una Reunión</h2>
+    <h2 style="color: #2c3e50; margin-bottom: 24px;">Te han Invitado a una Reunión</h2>
     
-    <p>Hola <strong>${data.attendeeName}</strong>,</p>
+    <p>Hola,</p>
     
-    <p>Has sido invitado a una reunión para <strong>${data.eventTitle}</strong>.</p>
+    <p><strong>${data.attendeeName}</strong> te ha invitado a una reunión para <strong>${data.eventTitle}</strong>.</p>
     
     <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 24px 0;">
-      <p style="margin: 8px 0;"><strong>📅 Fecha y Hora:</strong> ${data.formattedSlot}</p>
-      ${data.locationUrl ? `<p style="margin: 8px 0;"><strong>🔗 Enlace de Reunión:</strong> <a href="${data.locationUrl}" style="color: #0066cc;">${data.locationUrl}</a></p>` : ""}
+      <p style="margin: 8px 0;"><strong>Fecha y Hora:</strong> ${data.formattedSlot}</p>
+      ${data.locationUrl ? `<p style="margin: 8px 0;"><strong>Enlace de Reunión:</strong> <a href="${data.locationUrl}" style="color: #0066cc;">${data.locationUrl}</a></p>` : ""}
     </div>
     
     <p style="margin-top: 32px; color: #666; font-size: 13px;">
       Si tienes preguntas sobre esta reunión, contáctate con el organizador.
+    </p>
+    
+    <p style="margin-top: 24px; color: #999; font-size: 12px;">
+      © 2026 MyCalendar. Todos los derechos reservados.
+    </p>
+  </div>
+</body>
+</html>`;
+  } else if (type === "owner-booking-notification") {
+    // Email para notificar al owner de nueva reserva
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="${baseStyles}">
+  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h2 style="color: #2c3e50; margin-bottom: 24px;">Nueva Reserva</h2>
+    
+    <p>Hola,</p>
+    
+    <p><strong>${data.attendeeName}</strong> ha reservado la siguiente reunión:</p>
+    
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 24px 0;">
+      <p style="margin: 8px 0;"><strong>Evento:</strong> ${data.eventTitle}</p>
+      <p style="margin: 8px 0;"><strong>Asistente:</strong> ${data.attendeeName}</p>
+      <p style="margin: 8px 0;"><strong>Correo:</strong> ${data.locationUrl ? data.locationUrl : "No especificado"}</p>
+      <p style="margin: 8px 0;"><strong>Fecha y Hora:</strong> ${data.formattedSlot}</p>
+    </div>
+    
+    <p style="margin-top: 32px; color: #666; font-size: 13px;">
+      Gestiona esta reserva desde tu panel de control.
     </p>
     
     <p style="margin-top: 24px; color: #999; font-size: 12px;">
@@ -221,6 +256,7 @@ serve(async (req: Request) => {
 
     const {
       ownerEmail,
+      ownerName = "Organizador",
       attendeeName,
       attendeeEmail,
       eventTitle,
@@ -548,11 +584,11 @@ serve(async (req: Request) => {
       // Enviar notificación al owner SIN botones (para nuevo booking)
       if (type === "booking") {
         console.log(`Sending booking notification to owner: ${ownerEmail}`);
-        const ownerNotificationContent = getEmailTemplate("guest-notification", {
-          attendeeName: `${attendeeName} (${attendeeEmail})`,
+        const ownerNotificationContent = getEmailTemplate("owner-booking-notification", {
+          attendeeName,
           eventTitle,
           formattedSlot,
-          locationUrl,
+          locationUrl: attendeeEmail,
         });
 
         const ownerEmailResponse = await fetch("https://api.resend.com/emails", {
@@ -584,7 +620,7 @@ serve(async (req: Request) => {
         for (const guestEmail of extraGuests) {
           try {
             const guestEmailContent = getEmailTemplate("guest-notification", {
-              attendeeName: attendeeName, // Usar el nombre del que hizo la reserva
+              attendeeName,
               eventTitle,
               formattedSlot,
               locationUrl,
@@ -599,7 +635,7 @@ serve(async (req: Request) => {
               body: JSON.stringify({
                 from: "My Calendar <noreply@mycalendar.pro>",
                 to: guestEmail,
-              subject: `Te han invitado a una reunión - ${eventTitle}`,
+                subject: `Te han invitado a una reunión - ${eventTitle}`,
                 html: guestEmailContent,
               }),
             });

@@ -143,6 +143,7 @@ export default function BookingWidget({ event, slots, onBooked, embedded = false
                   bookingId: booking.id,
                   locationUrl: event.location_url,
                   type: 'booking',
+                  extraGuests: form.guests,
                 }),
               }
             )

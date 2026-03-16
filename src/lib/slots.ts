@@ -8,14 +8,19 @@ import {
   isEqual,
 } from 'date-fns'
 import { es } from 'date-fns/locale'
-import type { Event, Slot } from '../types'
+import type { Event, Slot, Booking } from '../types'
 
 /**
  * Genera todos los slots disponibles para un evento dado el listado de
  * reservas ya existentes (slot_datetime strings).
  */
-export function generateSlots(event: Event, bookedDatetimes: string[]): Slot[] {
-  const bookedSet = new Set(bookedDatetimes)
+export function generateSlots(event: Event, bookedDatetimes: string[] | Booking[]): Slot[] {
+  // Normalizar input: si es Booking[], extraer los slot_datetime
+  const dateStrings = isBookingArray(bookedDatetimes)
+    ? bookedDatetimes.map(b => b.slot_datetime)
+    : bookedDatetimes
+  
+  const bookedSet = new Set(dateStrings)
 
   const days = eachDayOfInterval({
     start: parseISO(event.date_start),
@@ -60,6 +65,11 @@ function pad(n: number) {
   return String(n).padStart(2, '0')
 }
 
+// Type guard para verificar si es Booking[]
+function isBookingArray(arr: any[]): arr is Booking[] {
+  return arr.length > 0 && 'slot_datetime' in arr[0]
+}
+
 /** Genera un slug URL-friendly a partir de un título */
 export function slugify(text: string): string {
   return text
@@ -82,3 +92,22 @@ export const SLOT_DURATIONS = [
   { label: '2 horas', value: 120 },
   { label: '3 horas', value: 180 },
 ]
+
+/**
+ * Formatea un slot_datetime ISO a un string legible
+ * Ejemplos:
+ * - detailed=true: "Mar 17 Mar · 5:00 PM"
+ * - detailed=false: "5:00 PM"
+ */
+export function formatSlotDateTime(isoString: string, detailed: boolean = true): string {
+  try {
+    const date = parseISO(isoString)
+    if (detailed) {
+      return format(date, "EEE d MMM · h:mm aa", { locale: es })
+    } else {
+      return format(date, "h:mm aa", { locale: es })
+    }
+  } catch (e) {
+    return isoString
+  }
+}

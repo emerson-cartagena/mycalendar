@@ -3,8 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { CheckCircle, AlertCircle, Calendar, Clock, User, Mail } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { generateSlots, formatSlotDateTime } from '../lib/slots'
-import BookingWidget from '../components/BookingWidget'
-import type { Event, Booking } from '../types'
+import type { Event, Booking, Slot } from '../types'
 
 export default function BookingActionPage() {
   const [searchParams] = useSearchParams()
@@ -19,7 +18,7 @@ export default function BookingActionPage() {
   
   const [booking, setBooking] = useState<Booking | null>(null)
   const [event, setEvent] = useState<Event | null>(null)
-  const [slots, setSlots] = useState<string[]>([])
+  const [slots, setSlots] = useState<Slot[]>([])
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
   const [rescheduling, setRescheduling] = useState(false)
 
@@ -90,7 +89,7 @@ export default function BookingActionPage() {
             .eq('status', 'confirmed')
           
           const availableSlots = generateSlots(
-            eventData,
+            eventData as Event,
             (bookings as Booking[]) ?? []
           )
           setSlots(availableSlots)
@@ -332,17 +331,17 @@ export default function BookingActionPage() {
                 <div className="grid grid-cols-2 gap-2 mb-6">
                   {slots.map((slot) => (
                     <button
-                      key={slot}
-                      onClick={() => setSelectedSlot(slot)}
+                      key={slot.datetime}
+                      onClick={() => setSelectedSlot(slot.datetime)}
                       className={`p-3 rounded-lg border-2 transition font-medium ${
-                        selectedSlot === slot
+                        selectedSlot === slot.datetime
                           ? 'border-primary-600 bg-primary-50 text-primary-900'
                           : 'border-gray-200 hover:border-primary-300 text-gray-900'
                       }`}
                     >
                       <div className="flex items-center justify-center gap-2">
                         <Clock className="w-4 h-4" />
-                        {formatSlotDateTime(slot, false)}
+                        {slot.label}
                       </div>
                     </button>
                   ))}

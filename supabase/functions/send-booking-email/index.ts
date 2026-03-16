@@ -250,24 +250,53 @@ serve(async (req: Request) => {
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 30);
 
-      // Guardar tokens
-      await Promise.all([
-        supabase.from("booking_tokens").insert({
-          booking_id: bookingId,
-          token: cancelToken,
-          action_type: "cancel",
-          expires_at: expiresAt.toISOString(),
-        }),
-        supabase.from("booking_tokens").insert({
-          booking_id: bookingId,
-          token: rescheduleToken,
-          action_type: "reschedule",
-          expires_at: expiresAt.toISOString(),
-        }),
-      ]);
+      console.log("Generating tokens for booking:", { bookingId, cancelToken: cancelToken.substring(0, 10) + "..." });
 
-      cancelLink = `https://mycalendar.pro/booking-action?token=${cancelToken}&action=cancel`;
-      rescheduleLink = `https://mycalendar.pro/booking-action?token=${rescheduleToken}&action=reschedule`;
+      // Guardar tokens con error handling
+      try {
+        const [cancelResult, rescheduleResult] = await Promise.all([
+          supabase.from("booking_tokens").insert({
+            booking_id: bookingId,
+            token: cancelToken,
+            action_type: "cancel",
+            expires_at: expiresAt.toISOString(),
+          }),
+          supabase.from("booking_tokens").insert({
+            booking_id: bookingId,
+            token: rescheduleToken,
+            action_type: "reschedule",
+            expires_at: expiresAt.toISOString(),
+          }),
+        ]);
+
+        if (cancelResult.error) {
+          console.error("Error saving cancel token:", cancelResult.error);
+        } else {
+          console.log("✓ Cancel token saved successfully");
+        }
+
+        if (rescheduleResult.error) {
+          console.error("Error saving reschedule token:", rescheduleResult.error);
+        } else {
+          console.log("✓ Reschedule token saved successfully");
+        }
+
+        cancelLink = `https://mycalendar.pro/booking-action?token=${cancelToken}&action=cancel`;
+        rescheduleLink = `https://mycalendar.pro/booking-action?token=${rescheduleToken}&action=reschedule`;
+        console.log("✓ Token links generated:", { cancelLink: cancelLink.substring(0, 50) + "...", rescheduleLink: rescheduleLink.substring(0, 50) + "..." });
+      } catch (tokenError) {
+        console.error("Error during token generation/insertion:", tokenError);
+        return new Response(
+          JSON.stringify({ error: `Failed to generate tokens: ${tokenError}` }),
+          { 
+            status: 500, 
+            headers: { 
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            } 
+          }
+        );
+      }
     }
 
     const attendeeEmailContent = getEmailTemplate(type, {

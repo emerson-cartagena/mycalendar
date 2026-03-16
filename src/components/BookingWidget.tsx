@@ -140,8 +140,9 @@ export default function BookingWidget({ event, slots, onBooked, embedded = false
                   attendeeEmail: form.email.trim().toLowerCase(),
                   slot: selected.datetime,
                   eventTitle: event.title,
-                  eventId: event.id,
+                  bookingId: booking.id,
                   locationUrl: event.location_url,
+                  type: 'booking',
                 }),
               }
             )

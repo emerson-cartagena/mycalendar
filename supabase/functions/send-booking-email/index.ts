@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "";
+const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY") || "";
 
 interface RequestBody {
   ownerEmail: string;
@@ -68,10 +68,10 @@ serve(async (req: Request) => {
       );
     }
 
-    if (!RESEND_API_KEY) {
-      console.error("RESEND_API_KEY not configured in Supabase Vault");
+    if (!SENDGRID_API_KEY) {
+      console.error("SENDGRID_API_KEY not configured in Supabase Vault");
       return new Response(
-        JSON.stringify({ error: "Email service not configured. Please add RESEND_API_KEY to Supabase Vault." }),
+        JSON.stringify({ error: "Email service not configured. Please add SENDGRID_API_KEY to Supabase Vault." }),
         { 
           status: 500, 
           headers: { 
@@ -82,8 +82,8 @@ serve(async (req: Request) => {
       );
     }
 
-    console.log("RESEND_API_KEY is available, length:", RESEND_API_KEY.length);
-    console.log("RESEND_API_KEY preview:", RESEND_API_KEY.substring(0, 10) + "...");
+    console.log("SENDGRID_API_KEY is available, length:", SENDGRID_API_KEY.length);
+    console.log("SENDGRID_API_KEY preview:", SENDGRID_API_KEY.substring(0, 10) + "...");
     console.log("Email configuration:", { ownerEmail, attendeeName, attendeeEmail, eventTitle, slot, type });
 
     const slotDate = new Date(slot);
@@ -175,17 +175,26 @@ serve(async (req: Request) => {
     }
 
     // Send email to owner
-    const ownerEmailResponse = await fetch("https://api.resend.com/emails", {
+    const ownerEmailResponse = await fetch("https://api.sendgrid.com/v3/mail/send", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${RESEND_API_KEY}`,
+        Authorization: `Bearer ${SENDGRID_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "emerson.cartagena.udb@gmail.com",
-        to: ownerEmail,
-        subject: `${type === "booking" ? "Nueva Reserva" : type === "reschedule" ? "Cambio de Reserva" : "Reserva Cancelada"} - ${eventTitle}`,
-        html: ownerEmailContent,
+        personalizations: [
+          {
+            to: [{ email: ownerEmail }],
+            subject: `${type === "booking" ? "Nueva Reserva" : type === "reschedule" ? "Cambio de Reserva" : "Reserva Cancelada"} - ${eventTitle}`,
+          },
+        ],
+        from: { email: "noreply@sendgrid.net" },
+        content: [
+          {
+            type: "text/html",
+            value: ownerEmailContent,
+          },
+        ],
       }),
     });
 
@@ -200,17 +209,26 @@ serve(async (req: Request) => {
     }
 
     // Send email to attendee
-    const attendeeEmailResponse = await fetch("https://api.resend.com/emails", {
+    const attendeeEmailResponse = await fetch("https://api.sendgrid.com/v3/mail/send", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${RESEND_API_KEY}`,
+        Authorization: `Bearer ${SENDGRID_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "emerson.cartagena.udb@gmail.com",
-        to: attendeeEmail,
-        subject: `${type === "booking" ? "Confirmación de Reserva" : type === "reschedule" ? "Reserva Reprogramada" : "Cancelación de Reserva"} - ${eventTitle}`,
-        html: attendeeEmailContent,
+        personalizations: [
+          {
+            to: [{ email: attendeeEmail }],
+            subject: `${type === "booking" ? "Confirmación de Reserva" : type === "reschedule" ? "Reserva Reprogramada" : "Cancelación de Reserva"} - ${eventTitle}`,
+          },
+        ],
+        from: { email: "noreply@sendgrid.net" },
+        content: [
+          {
+            type: "text/html",
+            value: attendeeEmailContent,
+          },
+        ],
       }),
     });
 

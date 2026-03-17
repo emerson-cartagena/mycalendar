@@ -248,7 +248,7 @@ export default function BookingActionsModal({ booking, event, otherBookings, onC
                 onClick={() => setAction('cancel')}
                 className="w-full py-2.5 px-3 rounded-lg border border-red-300 bg-red-50 text-red-700 hover:bg-red-100 font-medium text-sm flex items-center justify-center gap-2"
               >
-                <MoreVertical size={16} /> Más opciones
+                <MoreVertical size={16} /> Cancelar
               </button>
             </div>
           )}

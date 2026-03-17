@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { Copy, ExternalLink, Users, Clock, CheckCircle, Trash2, Edit2, ArrowLeft } from 'lucide-react'
+import { Copy, ExternalLink, Users, Clock, CheckCircle, MoreVertical, Edit2, ArrowLeft, Trash2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
@@ -239,7 +239,7 @@ export default function ManageEventPage() {
                     onClick={() => setSelectedBooking(b)}
                     className="text-gray-400 hover:text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
                   >
-                    <Trash2 size={14} />
+                    <MoreVertical size={14} />
                   </button>
                 </div>
               ))}

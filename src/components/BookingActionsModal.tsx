@@ -82,7 +82,7 @@ export default function BookingActionsModal({ booking, event, otherBookings, onC
 
       // Enviar email de reprogramación
       try {
-        await fetch(
+        const emailRes = await fetch(
           'https://vrggahqfapozygajklaj.functions.supabase.co/send-booking-email',
           {
             method: 'POST',
@@ -108,6 +108,8 @@ export default function BookingActionsModal({ booking, event, otherBookings, onC
             }),
           }
         )
+        const emailData = await emailRes.json()
+        console.log('📧 Email response:', emailRes.status, emailData)
       } catch (emailErr) {
         console.error('Error sending reschedule email:', emailErr)
       }
@@ -158,7 +160,7 @@ export default function BookingActionsModal({ booking, event, otherBookings, onC
 
       // Enviar email de cancelación
       try {
-        await fetch(
+        const emailRes = await fetch(
           'https://vrggahqfapozygajklaj.functions.supabase.co/send-booking-email',
           {
             method: 'POST',
@@ -182,6 +184,8 @@ export default function BookingActionsModal({ booking, event, otherBookings, onC
             }),
           }
         )
+        const emailData = await emailRes.json()
+        console.log('📧 Email response:', emailRes.status, emailData)
       } catch (emailErr) {
         console.error('Error sending cancel email:', emailErr)
       }

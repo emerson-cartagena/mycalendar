@@ -201,6 +201,37 @@ function getEmailTemplate(
   </div>
 </body>
 </html>`;
+  } else if (type === "guest-cancel-notification") {
+    // Email para notificar a invitados sobre cancelación
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="${baseStyles}">
+  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h2 style="color: #dc3545; margin-bottom: 24px;">Cancelación de Reunión</h2>
+    
+    <p>Hola,</p>
+    
+    <p>La reunión <strong>${data.eventTitle}</strong> ha sido cancelada.</p>
+    
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 24px 0;">
+      <p style="margin: 8px 0;"><strong>Fecha y Hora:</strong> ${data.formattedSlot}</p>
+    </div>
+    
+    <p style="margin-top: 32px; color: #666; font-size: 13px;">
+      Si tienes preguntas sobre esta cancelación, contacta con el organizador.
+    </p>
+    
+    <p style="margin-top: 24px; color: #999; font-size: 12px;">
+      © 2026 MyCalendar. Todos los derechos reservados.
+    </p>
+  </div>
+</body>
+</html>`;
+  }
   } else if (type === "owner-reschedule-notification") {
     // Email para notificar al owner de reprogramación sin botones
     return `<!DOCTYPE html>
@@ -629,11 +660,10 @@ serve(async (req: Request) => {
       // Enviar notificación a invitados
       if (extraGuests && extraGuests.length > 0) {
         for (const guestEmail of extraGuests) {
-          const guestCancelContent = getEmailTemplate("guest-notification", {
+          const guestCancelContent = getEmailTemplate("guest-cancel-notification", {
             attendeeName,
             eventTitle,
             formattedSlot,
-            locationUrl,
           });
 
           await fetch("https://api.resend.com/emails", {

@@ -267,7 +267,7 @@ export default function ManageEventPage() {
         <BookingActionsModal
           booking={selectedBooking}
           event={event}
-          otherBookings={bookings.filter(b => b.id !== selectedBooking.id)}
+          otherBookings={confirmedBookings.filter(b => b.id !== selectedBooking.id)}
           onClose={() => setSelectedBooking(null)}
           onUpdated={loadData}
         />

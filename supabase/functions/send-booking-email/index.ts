@@ -187,11 +187,11 @@ function getEmailTemplate(
       <p style="margin: 8px 0;"><strong>Fecha y Hora:</strong> ${data.formattedSlot}</p>
       ${data.locationUrl ? `<p style="margin: 8px 0;"><strong>Enlace de Reunión:</strong> <a href="${data.locationUrl}" style="color: #0066cc;">${data.locationUrl}</a></p>` : ""}
     </div>
-    
+
     <p style="margin-top: 32px; color: #666; font-size: 13px;">
-      Si tienes preguntas sobre esta reunión, contáctate con el organizador.
+      ${data.reason ? `<strong>Motivo:</strong> ${data.reason}` : "Si tienes preguntas sobre esta reunión, contáctate con el organizador."}
     </p>
-    
+
     <p style="margin-top: 24px; color: #999; font-size: 12px;">
       © 2026 MyCalendar. Todos los derechos reservados.
     </p>
@@ -216,12 +216,9 @@ function getEmailTemplate(
     
     <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 24px 0;">
       <p style="margin: 8px 0;"><strong>Fecha y Hora:</strong> ${data.formattedSlot}</p>
+      ${data.reason ? `<p style="margin: 8px 0;"><strong>Motivo:</strong> ${data.reason}</p>` : ""}
     </div>
-    
-    <p style="margin-top: 32px; color: #666; font-size: 13px;">
-      Si tienes preguntas sobre esta cancelación, contacta con el organizador.
-    </p>
-    
+
     <p style="margin-top: 24px; color: #999; font-size: 12px;">
       © 2026 MyCalendar. Todos los derechos reservados.
     </p>
@@ -248,11 +245,11 @@ function getEmailTemplate(
       <p style="margin: 8px 0;"><strong>Horario anterior:</strong> ${data.oldSlot}</p>
       <p style="margin: 8px 0; color: #28a745;"><strong>Nuevo horario:</strong> ${data.newSlot}</p>
     </div>
-    
+
     <p style="margin-top: 32px; color: #666; font-size: 13px;">
-      Gestiona esta reserva desde tu panel de control.
+      ${data.reason ? `<strong>Motivo:</strong> ${data.reason}` : "Gestiona esta reserva desde tu panel de control."}
     </p>
-    
+
     <p style="margin-top: 24px; color: #999; font-size: 12px;">
       © 2026 MyCalendar. Todos los derechos reservados.
     </p>
@@ -277,12 +274,9 @@ function getEmailTemplate(
     
     <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 24px 0;">
       <p style="margin: 8px 0;"><strong>Fecha y Hora:</strong> ${data.formattedSlot}</p>
+      ${data.reason ? `<p style="margin: 8px 0;"><strong>Motivo:</strong> ${data.reason}</p>` : ""}
     </div>
-    
-    <p style="margin-top: 32px; color: #666; font-size: 13px;">
-      Gestiona esta reserva desde tu panel de control.
-    </p>
-    
+
     <p style="margin-top: 24px; color: #999; font-size: 12px;">
       © 2026 MyCalendar. Todos los derechos reservados.
     </p>
@@ -497,6 +491,7 @@ serve(async (req: Request) => {
         rescheduleLink,
         oldSlot: formattedOldSlot,
         newSlot: formattedNewSlot,
+        reason,
       });
 
       await fetch("https://api.resend.com/emails", {
@@ -526,6 +521,7 @@ serve(async (req: Request) => {
         formattedSlot: formattedNewSlot,
         oldSlot: formattedOldSlot,
         newSlot: formattedNewSlot,
+        reason,
       });
 
       await fetch("https://api.resend.com/emails", {
@@ -556,6 +552,7 @@ serve(async (req: Request) => {
             eventTitle,
             formattedSlot: formattedNewSlot,
             locationUrl,
+            reason,
           });
 
           await fetch("https://api.resend.com/emails", {
@@ -579,8 +576,8 @@ serve(async (req: Request) => {
       }
 
       return new Response(
-        JSON.stringify({ 
-          success: true, 
+        JSON.stringify({
+          success: true,
           message: "Reschedule notifications sent",
         }),
         { 
@@ -603,6 +600,7 @@ serve(async (req: Request) => {
         eventTitle,
         formattedSlot,
         locationUrl,
+        reason,
       });
 
       // Enviar correo al ATTENDEE
@@ -631,6 +629,7 @@ serve(async (req: Request) => {
         attendeeName,
         eventTitle,
         formattedSlot,
+        reason,
       });
 
       await fetch("https://api.resend.com/emails", {
@@ -660,6 +659,7 @@ serve(async (req: Request) => {
             attendeeName,
             eventTitle,
             formattedSlot,
+            reason,
           });
 
           await fetch("https://api.resend.com/emails", {
@@ -733,6 +733,7 @@ serve(async (req: Request) => {
             attendeeName,
             eventTitle,
             formattedSlot,
+            reason,
           });
 
           await fetch("https://api.resend.com/emails", {
@@ -836,6 +837,7 @@ serve(async (req: Request) => {
             eventTitle,
             formattedSlot: formattedNewSlot,
             locationUrl,
+            reason,
           });
 
           await fetch("https://api.resend.com/emails", {

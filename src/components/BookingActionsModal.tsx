@@ -80,53 +80,36 @@ export default function BookingActionsModal({ booking, event, otherBookings, onC
         .update({ slot_datetime: selectedSlot.datetime, status: 'rescheduled' })
         .eq('id', booking.id)
 
-      // Obtener email del owner
-      const { data: eventData } = await supabase
-        .from('events')
-        .select('user_id, location_url')
-        .eq('id', event.id)
-        .single()
-
-      if (eventData) {
-        const { data: ownerData } = await supabase
-          .from('users')
-          .select('email, full_name')
-          .eq('id', eventData.user_id)
-          .single()
-
-        if (ownerData) {
-          // Enviar email de reprogramación
-          try {
-            await fetch(
-              'https://vrggahqfapozygajklaj.functions.supabase.co/send-booking-email',
-              {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                },
-                body: JSON.stringify({
-                  ownerEmail: ownerData.email,
-                  ownerName: ownerData.full_name || 'Organizador',
-                  attendeeName: booking.attendee_name,
-                  attendeeEmail: booking.attendee_email,
-                  eventTitle: event.title,
-                  bookingId: booking.id,
-                  locationUrl: eventData.location_url,
-                  type: 'reschedule',
-                  reason: reason.trim(),
-                  oldSlot: booking.slot_datetime,
-                  newSlot: selectedSlot.datetime,
-                  slot: selectedSlot.datetime,
-                  originatedFrom: 'owner',
-                  extraGuests: booking.extra_guests,
-                }),
-              }
-            )
-          } catch (emailErr) {
-            console.error('Error sending reschedule email:', emailErr)
+      // Enviar email de reprogramación
+      try {
+        await fetch(
+          'https://vrggahqfapozygajklaj.functions.supabase.co/send-booking-email',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({
+              ownerEmail: user!.email,
+              ownerName: 'Organizador',
+              attendeeName: booking.attendee_name,
+              attendeeEmail: booking.attendee_email,
+              eventTitle: event.title,
+              bookingId: booking.id,
+              locationUrl: event.location_url,
+              type: 'reschedule',
+              reason: reason.trim(),
+              oldSlot: booking.slot_datetime,
+              newSlot: selectedSlot.datetime,
+              slot: selectedSlot.datetime,
+              originatedFrom: 'owner',
+              extraGuests: booking.extra_guests,
+            }),
           }
-        }
+        )
+      } catch (emailErr) {
+        console.error('Error sending reschedule email:', emailErr)
       }
 
       toast.success('Reserva reprogramada. Se envió notificación.')
@@ -173,50 +156,34 @@ export default function BookingActionsModal({ booking, event, otherBookings, onC
         })
         .eq('id', booking.id)
 
-      // Obtener email del owner
-      const { data: eventData } = await supabase
-        .from('events')
-        .select('user_id')
-        .eq('id', event.id)
-        .single()
-
-      if (eventData) {
-        const { data: ownerData } = await supabase
-          .from('users')
-          .select('email, full_name')
-          .eq('id', eventData.user_id)
-          .single()
-
-        if (ownerData) {
-          // Enviar email de cancelación
-          try {
-            await fetch(
-              'https://vrggahqfapozygajklaj.functions.supabase.co/send-booking-email',
-              {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                },
-                body: JSON.stringify({
-                  ownerEmail: ownerData.email,
-                  ownerName: ownerData.full_name || 'Organizador',
-                  attendeeName: booking.attendee_name,
-                  attendeeEmail: booking.attendee_email,
-                  eventTitle: event.title,
-                  bookingId: booking.id,
-                  type: 'cancel',
-                  reason: reason.trim(),
-                  slot: booking.slot_datetime,
-                  originatedFrom: 'owner',
-                  extraGuests: booking.extra_guests,
-                }),
-              }
-            )
-          } catch (emailErr) {
-            console.error('Error sending cancel email:', emailErr)
+      // Enviar email de cancelación
+      try {
+        await fetch(
+          'https://vrggahqfapozygajklaj.functions.supabase.co/send-booking-email',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({
+              ownerEmail: user!.email,
+              ownerName: 'Organizador',
+              attendeeName: booking.attendee_name,
+              attendeeEmail: booking.attendee_email,
+              eventTitle: event.title,
+              bookingId: booking.id,
+              locationUrl: event.location_url,
+              type: 'cancel',
+              reason: reason.trim(),
+              slot: booking.slot_datetime,
+              originatedFrom: 'owner',
+              extraGuests: booking.extra_guests,
+            }),
           }
-        }
+        )
+      } catch (emailErr) {
+        console.error('Error sending cancel email:', emailErr)
       }
 
       toast.success('Reserva cancelada. Se envió notificación.')

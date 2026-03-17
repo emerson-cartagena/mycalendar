@@ -73,10 +73,7 @@ export default function LoginPage() {
               {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
             </button>
           </form>
-
-          <p className="text-xs text-gray-500 text-center mt-4">
-            (Para demo: crea manualmente un usuario en Supabase con role='user')
-          </p>
+          
         </div>
       </div>
     </div>

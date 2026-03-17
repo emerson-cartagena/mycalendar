@@ -232,7 +232,7 @@ function getEmailTemplate(
   </div>
 </body>
 </html>`;
-  }
+  } else if (type === "owner-booking-notification") {
     // Email para notificar al owner de nueva reserva
     return `<!DOCTYPE html>
 <html>

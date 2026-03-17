@@ -77,7 +77,7 @@ export default function BookingActionsModal({ booking, event, otherBookings, onC
       // Actualizar la reserva
       await supabase
         .from('bookings')
-        .update({ slot_datetime: selectedSlot.datetime })
+        .update({ slot_datetime: selectedSlot.datetime, status: 'rescheduled' })
         .eq('id', booking.id)
 
       // Enviar email de reprogramación

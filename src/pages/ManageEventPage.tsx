@@ -117,7 +117,7 @@ export default function ManageEventPage() {
   if (loading) return <PageLoader />
   if (!event) return <NotFound />
 
-  const confirmedBookings = bookings.filter(b => b.status === 'confirmed')
+  const confirmedBookings = bookings.filter(b => b.status === 'confirmed' || b.status === 'rescheduled')
   const slots      = generateSlots(event, confirmedBookings.map(b => b.slot_datetime))
   const totalSlots = slots.length
   const booked     = confirmedBookings.length

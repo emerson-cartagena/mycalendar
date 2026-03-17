@@ -25,6 +25,7 @@ export default function BookingActionPage() {
   
   const [cancellationReason, setCancellationReason] = useState('')
   const [cancelling, setCancelling] = useState(false)
+  const [rescheduleReason, setRescheduleReason] = useState('')
 
   useEffect(() => {
     if (!token || !action) {
@@ -135,11 +136,11 @@ export default function BookingActionPage() {
           change_type: 'reschedule',
           old_slot_datetime: booking.slot_datetime,
           new_slot_datetime: selectedSlot,
-          reason: 'Reprogramación desde enlace de email',
+          reason: rescheduleReason || 'Reprogramación desde enlace de email',
           created_by: event.user_id,
         })
 
-      // Enviar notificación de reprogramación al owner y guests
+      // Enviar notificación de reprogramación al owner y al asistente
       try {
         const { data: ownerData } = await supabase
           .from('users')
@@ -148,6 +149,7 @@ export default function BookingActionPage() {
           .single()
 
         if (ownerData) {
+          // Enviar al organizador
           await fetch(
             'https://vrggahqfapozygajklaj.functions.supabase.co/send-booking-email',
             {
@@ -170,9 +172,69 @@ export default function BookingActionPage() {
                 newSlot: selectedSlot,
                 originatedFrom: 'attendee',
                 extraGuests: booking.extra_guests,
+                reason: rescheduleReason,
               }),
             }
           )
+
+          // Enviar al asistente
+          await fetch(
+            'https://vrggahqfapozygajklaj.functions.supabase.co/send-booking-email',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+              },
+              body: JSON.stringify({
+                ownerEmail: booking.attendee_email,
+                ownerName: booking.attendee_name,
+                attendeeName: booking.attendee_name,
+                attendeeEmail: booking.attendee_email,
+                eventTitle: event.title,
+                bookingId: booking.id,
+                slot: selectedSlot,
+                locationUrl: event.location_url,
+                type: 'reschedule',
+                oldSlot: booking.slot_datetime,
+                newSlot: selectedSlot,
+                originatedFrom: 'attendee',
+                extraGuests: booking.extra_guests,
+                reason: rescheduleReason,
+              }),
+            }
+          )
+
+          // Enviar a invitados adicionales
+          if (booking.extra_guests && booking.extra_guests.length > 0) {
+            for (const guestEmail of booking.extra_guests) {
+              await fetch(
+                'https://vrggahqfapozygajklaj.functions.supabase.co/send-booking-email',
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                  },
+                  body: JSON.stringify({
+                    ownerEmail: guestEmail,
+                    ownerName: 'Invitado',
+                    attendeeName: booking.attendee_name,
+                    attendeeEmail: booking.attendee_email,
+                    eventTitle: event.title,
+                    bookingId: booking.id,
+                    slot: selectedSlot,
+                    locationUrl: event.location_url,
+                    type: 'reschedule',
+                    oldSlot: booking.slot_datetime,
+                    newSlot: selectedSlot,
+                    originatedFrom: 'attendee',
+                    reason: rescheduleReason,
+                  }),
+                }
+              )
+            }
+          }
         }
       } catch (emailErr) {
         console.error('Error sending reschedule notification:', emailErr)
@@ -507,7 +569,7 @@ export default function BookingActionPage() {
                 Selecciona una Nueva Hora
               </h2>
               
-              {slots.length === 0 ? (
+              {slots.filter(s => s.available).length === 0 ? (
                 <div className="text-center py-8">
                   <AlertCircle className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
                   <p className="text-gray-600">
@@ -516,7 +578,7 @@ export default function BookingActionPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-2 mb-6">
-                  {slots.map((slot) => (
+                  {slots.filter(s => s.available).map((slot) => (
                     <button
                       key={slot.datetime}
                       onClick={() => setSelectedSlot(slot.datetime)}
@@ -534,6 +596,20 @@ export default function BookingActionPage() {
                   ))}
                 </div>
               )}
+
+              <div className="mb-6">
+                <label htmlFor="reschedule-reason" className="block text-sm font-semibold text-gray-800 mb-2">
+                  Razón de cambio (opcional)
+                </label>
+                <textarea
+                  id="reschedule-reason"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                  rows={2}
+                  placeholder="Ej: Cambio de horario de trabajo..."
+                  value={rescheduleReason}
+                  onChange={(e) => setRescheduleReason(e.target.value)}
+                />
+              </div>
 
               <button
                 onClick={handleRescheduleSubmit}

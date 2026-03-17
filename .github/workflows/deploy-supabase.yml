@@ -21,8 +21,9 @@ jobs:
 
       - name: Install Supabase CLI
         run: |
-          curl -fsSL https://github.com/supabase/cli/releases/download/v1.191.3/supabase_linux_amd64 -o supabase
-          chmod +x supabase
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/supabase/cli/releases/latest | grep '"tag_name"' | cut -d '"' -f 4 | sed 's/v//')
+          curl -fsSL https://github.com/supabase/cli/releases/download/v${LATEST_VERSION}/supabase_${LATEST_VERSION}_linux_amd64.tar.gz -o supabase.tar.gz
+          tar -xzf supabase.tar.gz
           sudo mv supabase /usr/local/bin/
           supabase --version
 

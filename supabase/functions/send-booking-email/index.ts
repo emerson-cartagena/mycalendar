@@ -1,5 +1,5 @@
 // Edge Function: Send booking confirmation and notification emails
-// Version: 1.2.1 - Uses direct CLI binary installation
+// Version: 1.2.2 - Latest CLI with dynamic version detection
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 

@@ -1,4 +1,5 @@
 // Edge Function: Send booking confirmation and notification emails
+// Updated: 2026-03-16 - Added cancellation reason support
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 

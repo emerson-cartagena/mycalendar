@@ -150,7 +150,8 @@ export default function BookingActionPage() {
           created_by: event.user_id,
         })
 
-      // Enviar notificación de reprogramación al owner y al asistente
+      // UNA SOLA LLAMADA al endpoint con toda la información
+      // El endpoint se encarga de todo: tokens, envíos, etc.
       try {
         const { data: ownerData } = await supabase
           .from('users')
@@ -159,7 +160,6 @@ export default function BookingActionPage() {
           .single()
 
         if (ownerData) {
-          // Enviar al organizador
           await fetch(
             'https://vrggahqfapozygajklaj.functions.supabase.co/send-booking-email',
             {
@@ -186,64 +186,6 @@ export default function BookingActionPage() {
               }),
             }
           )
-
-          // Enviar al asistente
-          await fetch(
-            'https://vrggahqfapozygajklaj.functions.supabase.co/send-booking-email',
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-              },
-              body: JSON.stringify({
-                ownerEmail: booking.attendee_email,
-                ownerName: booking.attendee_name,
-                attendeeName: booking.attendee_name,
-                attendeeEmail: booking.attendee_email,
-                eventTitle: event.title,
-                bookingId: booking.id,
-                slot: selectedSlot,
-                locationUrl: event.location_url,
-                type: 'reschedule',
-                oldSlot: booking.slot_datetime,
-                newSlot: selectedSlot,
-                originatedFrom: 'attendee',
-                extraGuests: booking.extra_guests,
-                reason: rescheduleReason,
-              }),
-            }
-          )
-
-          // Enviar a invitados adicionales
-          if (booking.extra_guests && booking.extra_guests.length > 0) {
-            for (const guestEmail of booking.extra_guests) {
-              await fetch(
-                'https://vrggahqfapozygajklaj.functions.supabase.co/send-booking-email',
-                {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                  },
-                  body: JSON.stringify({
-                    ownerEmail: guestEmail,
-                    ownerName: 'Invitado',
-                    attendeeName: booking.attendee_name,
-                    attendeeEmail: booking.attendee_email,
-                    eventTitle: event.title,
-                    bookingId: booking.id,
-                    slot: selectedSlot,
-                    locationUrl: event.location_url,
-                    type: 'guest-notification',
-                    oldSlot: booking.slot_datetime,
-                    newSlot: selectedSlot,
-                    reason: rescheduleReason,
-                  }),
-                }
-              )
-            }
-          }
         }
       } catch (emailErr) {
         console.error('Error sending reschedule notification:', emailErr)

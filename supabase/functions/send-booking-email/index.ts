@@ -700,6 +700,177 @@ serve(async (req: Request) => {
       );
     }
 
+    // CANCELACIÓN ORIGINADA DEL OWNER
+    if (originatedFrom === "owner" && type === "cancel") {
+      console.log("🔴 Owner-initiated cancellation");
+
+      // Enviar correo al ATTENDEE
+      const cancelEmailContent = getEmailTemplate("cancel", {
+        attendeeName,
+        eventTitle,
+        formattedSlot,
+        reason,
+      });
+
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${RESEND_API_KEY}`,
+        },
+        body: JSON.stringify({
+          from: "My Calendar <noreply@mycalendar.pro>",
+          to: attendeeEmail,
+          subject: `Reserva Cancelada - ${eventTitle}`,
+          html: cancelEmailContent,
+        }),
+      }).then(res => {
+        if (res.ok) console.log("✓ Cancellation email sent to attendee");
+        else console.error("❌ Failed to send cancellation email to attendee");
+      });
+
+      // Enviar notificación a invitados
+      if (extraGuests && extraGuests.length > 0) {
+        for (const guestEmail of extraGuests) {
+          const guestCancelContent = getEmailTemplate("guest-cancel-notification", {
+            attendeeName,
+            eventTitle,
+            formattedSlot,
+          });
+
+          await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${RESEND_API_KEY}`,
+            },
+            body: JSON.stringify({
+              from: "My Calendar <noreply@mycalendar.pro>",
+              to: guestEmail,
+              subject: `Cancelación de Reunión - ${eventTitle}`,
+              html: guestCancelContent,
+            }),
+          }).then(res => {
+            if (res.ok) console.log(`✓ Cancellation notification sent to ${guestEmail}`);
+          });
+        }
+      }
+
+      return new Response(
+        JSON.stringify({ success: true, message: "Owner cancellation notifications sent" }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+    }
+
+    // REPROGRAMACIÓN ORIGINADA DEL OWNER
+    if (originatedFrom === "owner" && type === "reschedule") {
+      console.log("🔄 Owner-initiated reschedule");
+
+      // Generar nuevos tokens para el attendee
+      const cancelToken = generateSecureToken();
+      const rescheduleToken = generateSecureToken();
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 30);
+
+      try {
+        await Promise.all([
+          supabase.from("booking_tokens").insert({
+            booking_id: bookingId,
+            token: cancelToken,
+            action_type: "cancel",
+            expires_at: expiresAt.toISOString(),
+          }),
+          supabase.from("booking_tokens").insert({
+            booking_id: bookingId,
+            token: rescheduleToken,
+            action_type: "reschedule",
+            expires_at: expiresAt.toISOString(),
+          }),
+        ]);
+
+        cancelLink = `https://mycalendar.pro/booking-action?token=${cancelToken}&action=cancel`;
+        rescheduleLink = `https://mycalendar.pro/booking-action?token=${rescheduleToken}&action=reschedule`;
+        console.log("✓ New tokens created for owner reschedule");
+      } catch (tokenError) {
+        console.error("❌ Error generating tokens:", tokenError);
+      }
+
+      // Enviar correo al ATTENDEE con nuevos botones
+      const attendeeRescheduleContent = getEmailTemplate("reschedule", {
+        attendeeName,
+        eventTitle,
+        formattedSlot: formattedNewSlot,
+        locationUrl,
+        cancelLink,
+        rescheduleLink,
+        oldSlot: formattedOldSlot,
+        newSlot: formattedNewSlot,
+        reason,
+      });
+
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${RESEND_API_KEY}`,
+        },
+        body: JSON.stringify({
+          from: "My Calendar <noreply@mycalendar.pro>",
+          to: attendeeEmail,
+          subject: `Reserva Reprogramada - ${eventTitle}`,
+          html: attendeeRescheduleContent,
+        }),
+      }).then(res => {
+        if (res.ok) console.log("✓ Reschedule email sent to attendee");
+        else console.error("❌ Failed to send reschedule email to attendee");
+      });
+
+      // Enviar a invitados
+      if (extraGuests && extraGuests.length > 0) {
+        for (const guestEmail of extraGuests) {
+          const guestEmailContent = getEmailTemplate("guest-notification", {
+            attendeeName,
+            eventTitle,
+            formattedSlot: formattedNewSlot,
+            locationUrl,
+          });
+
+          await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${RESEND_API_KEY}`,
+            },
+            body: JSON.stringify({
+              from: "My Calendar <noreply@mycalendar.pro>",
+              to: guestEmail,
+              subject: `Cambio de Horario - ${eventTitle}`,
+              html: guestEmailContent,
+            }),
+          }).then(res => {
+            if (res.ok) console.log(`✓ Guest notification sent to ${guestEmail}`);
+          });
+        }
+      }
+
+      return new Response(
+        JSON.stringify({ success: true, message: "Owner reschedule notifications sent" }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+    }
+
     // BOOKING: Generar tokens SOLO UNA VEZ
     if (type === "booking") {
       const cancelToken = generateSecureToken();

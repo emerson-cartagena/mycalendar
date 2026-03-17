@@ -24,7 +24,6 @@ export default function BookingActionPage() {
   const [rescheduling, setRescheduling] = useState(false)
   
   const [cancellationReason, setCancellationReason] = useState('')
-  const [cancelConfirmed, setCancelConfirmed] = useState(false)
   const [cancelling, setCancelling] = useState(false)
 
   useEffect(() => {
@@ -344,7 +343,7 @@ export default function BookingActionPage() {
   }
 
   // ── CANCELLATION FORM ──
-  if (action === 'cancel' && booking && !cancelConfirmed && !success) {
+  if (action === 'cancel' && booking && !success) {
     if (cancelling) {
       return (
         <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white flex items-center justify-center px-4">

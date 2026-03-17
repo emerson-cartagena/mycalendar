@@ -217,7 +217,7 @@ export default function BookingActionsModal({ booking, event, otherBookings, onC
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-lg max-w-md w-full max-h-96 overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[85vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-100 sticky top-0 bg-white">
           <h2 className="font-semibold text-gray-900">Gestionar reserva</h2>
@@ -248,7 +248,7 @@ export default function BookingActionsModal({ booking, event, otherBookings, onC
                 onClick={() => setAction('cancel')}
                 className="w-full py-2.5 px-3 rounded-lg border border-red-300 bg-red-50 text-red-700 hover:bg-red-100 font-medium text-sm flex items-center justify-center gap-2"
               >
-                <Trash2 size={16} /> Cancelar
+                <Trash2 size={16} /> Más opciones
               </button>
             </div>
           )}
@@ -257,19 +257,20 @@ export default function BookingActionsModal({ booking, event, otherBookings, onC
             <form onSubmit={handleReschedule} className="space-y-3">
               <div>
                 <label className="label text-sm">Nuevo horario</label>
-                <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
+                <div className="grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
                   {availableSlots.map(s => (
                     <button
                       key={s.datetime}
                       type="button"
                       onClick={() => setSelectedSlot(s)}
-                      className={`py-1.5 px-2 rounded text-xs font-medium border transition-colors ${
+                      className={`py-2 px-2 rounded text-xs font-medium border transition-colors flex flex-col items-center gap-1 ${
                         selectedSlot?.datetime === s.datetime
                           ? 'bg-primary-600 text-white border-primary-600'
                           : 'border-gray-300 bg-white hover:border-primary-300'
                       }`}
                     >
-                      {format(parseISO(s.datetime), 'h:mm aa', { locale: es })}
+                      <span className="text-xs">{format(parseISO(s.datetime), 'EEE d MMM', { locale: es })}</span>
+                      <span className="font-bold">{format(parseISO(s.datetime), 'h:mm aa', { locale: es })}</span>
                     </button>
                   ))}
                 </div>

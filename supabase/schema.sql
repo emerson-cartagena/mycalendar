@@ -13,6 +13,7 @@ create table if not exists public.users (
   id        uuid primary key default gen_random_uuid(),
   email     text not null unique,
   password  text not null,  -- bcryptjs hash (ej: $2b$10$...)
+  full_name text,           -- nombre completo del usuario
   role      text not null check (role in ('admin', 'user')),
   created_at timestamptz default now()
 );

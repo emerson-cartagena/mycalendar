@@ -1,12 +1,14 @@
-import { parseISO, isPast, isBefore, isAfter, startOfDay } from 'date-fns'
+import { parseISO, isBefore, isAfter, startOfDay } from 'date-fns'
 import type { Event, EventStatus } from '../types'
 
 export function getEventStatus(event: Event): EventStatus {
-  const today = startOfDay(new Date())
+  const now = new Date()
+  const today = startOfDay(now)
   const startDate = startOfDay(parseISO(event.date_start))
-  const endDate = startOfDay(parseISO(event.date_end))
+  // Combinar fecha y hora de fin para comparar el momento exacto
+  const endDateTime = new Date(`${event.date_end}T${event.time_end}`)
 
-  if (isPast(endDate) || isBefore(endDate, today)) {
+  if (isBefore(endDateTime, now)) {
     return 'past'
   }
 

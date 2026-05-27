@@ -8,6 +8,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string
+const IS_DEV = import.meta.env.DEV
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -21,22 +22,23 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    if (!turnstileToken) {
+    if (!IS_DEV && !turnstileToken) {
       toast.error('Completa la verificación de seguridad')
       return
     }
 
     setLoading(true)
     try {
-      // Verificar token Turnstile en servidor
-      const { data, error } = await supabase.functions.invoke('verify-turnstile', {
-        body: { token: turnstileToken },
-      })
+      if (!IS_DEV) {
+        const { data, error } = await supabase.functions.invoke('verify-turnstile', {
+          body: { token: turnstileToken },
+        })
 
-      if (error || !data?.success) {
-        turnstileRef.current?.reset()
-        setTurnstileToken(null)
-        throw new Error('Verificación de seguridad fallida. Inténtalo de nuevo.')
+        if (error || !data?.success) {
+          turnstileRef.current?.reset()
+          setTurnstileToken(null)
+          throw new Error('Verificación de seguridad fallida. Inténtalo de nuevo.')
+        }
       }
 
       await login(email, password)
@@ -53,9 +55,12 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <Calendar className="text-primary-600" size={32} />
-          <span className="text-2xl font-bold text-gray-900">MyCalendar</span>
+        <div className="flex flex-col items-center gap-2 mb-8">
+          <div className="flex items-center gap-2">
+            <Calendar className="text-primary-600" size={32} />
+            <span className="text-2xl font-bold text-gray-900">MyCalendar</span>
+          </div>
+          <p className="text-sm text-gray-500">Reservas online para profesionales</p>
         </div>
 
         {/* Card */}
@@ -89,7 +94,7 @@ export default function LoginPage() {
               />
             </div>
 
-            {TURNSTILE_SITE_KEY && (
+            {!IS_DEV && TURNSTILE_SITE_KEY && (
               <div className="flex justify-center">
                 <Turnstile
                   ref={turnstileRef}
@@ -107,7 +112,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={loading || (!!TURNSTILE_SITE_KEY && !turnstileToken)}
+              disabled={loading || (!IS_DEV && !!TURNSTILE_SITE_KEY && !turnstileToken)}
               className="btn-primary w-full py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}

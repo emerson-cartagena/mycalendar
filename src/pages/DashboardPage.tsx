@@ -113,19 +113,19 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            {/* Futuros */}
-            {byStatus.future.length > 0 && (
-              <EventGroup title="Próximos" icon="🚀" events={byStatus.future} onDelete={openDeleteConfirm} owners={owners} isAdmin={user.role === 'admin'} />
-            )}
-
             {/* Activos */}
             {byStatus.active.length > 0 && (
-              <EventGroup title="Activos" icon="🔴" events={byStatus.active} onDelete={openDeleteConfirm} owners={owners} isAdmin={user.role === 'admin'} />
+              <EventGroup title="Activos" icon="🔴" events={byStatus.active} onDelete={openDeleteConfirm} collapsible owners={owners} isAdmin={user.role === 'admin'} />
             )}
 
-            {/* Pasados */}
+            {/* Futuros */}
+            {byStatus.future.length > 0 && (
+              <EventGroup title="Próximos" icon="🚀" events={byStatus.future} onDelete={openDeleteConfirm} collapsible owners={owners} isAdmin={user.role === 'admin'} />
+            )}
+
+            {/* Pasados — colapsados por defecto */}
             {byStatus.past.length > 0 && (
-              <EventGroup title="Pasados" icon="✓" events={byStatus.past} onDelete={openDeleteConfirm} isPast owners={owners} isAdmin={user.role === 'admin'} />
+              <EventGroup title="Pasados" icon="✓" events={byStatus.past} onDelete={openDeleteConfirm} isPast collapsible defaultCollapsed owners={owners} isAdmin={user.role === 'admin'} />
             )}
           </div>
         )}
@@ -167,23 +167,36 @@ export default function DashboardPage() {
   )
 }
 
-function EventGroup({ title, icon, events, isPast, onDelete, owners, isAdmin }: {
+function EventGroup({ title, icon, events, isPast, collapsible, defaultCollapsed, onDelete, owners, isAdmin }: {
   title: string
   icon: string
   events: Event[]
   isPast?: boolean
+  collapsible?: boolean
+  defaultCollapsed?: boolean
   onDelete: (id: string, title: string) => void
   owners?: Map<string, string>
   isAdmin?: boolean
 }) {
   const [openMenu, setOpenMenu] = useState<string | null>(null)
+  const [collapsed, setCollapsed] = useState(!!defaultCollapsed)
 
   return (
     <div>
-      <h2 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-        <span>{icon}</span> {title} ({events.length})
-      </h2>
-      <div className="grid gap-4">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+          <span>{icon}</span> {title} ({events.length})
+        </h2>
+        {collapsible && (
+          <button
+            onClick={() => setCollapsed(c => !c)}
+            className="text-sm text-primary-600 hover:text-primary-800 font-medium transition-colors"
+          >
+            {collapsed ? 'Ver todos' : 'Ocultar'}
+          </button>
+        )}
+      </div>
+      {!collapsed && <div className="grid gap-4">
         {events.map(e => (
           <div key={e.id} className="card p-4 flex items-start justify-between hover:shadow-md transition-shadow group">
             <div className="flex-1 min-w-0">
@@ -240,7 +253,7 @@ function EventGroup({ title, icon, events, isPast, onDelete, owners, isAdmin }: 
             </div>
           </div>
         ))}
-      </div>
+      </div>}
     </div>
   )
 }

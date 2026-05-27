@@ -31,23 +31,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   async function login(email: string, password: string) {
-    const { data: user, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email.toLowerCase())
-      .single()
+    const { data, error } = await supabase.functions.invoke('login', {
+      body: { email, password },
+    })
 
-    if (error || !user) {
-      throw new Error('Usuario o contraseña incorrectos')
+    if (error || !data?.user) {
+      throw new Error(data?.error || 'Usuario o contraseña incorrectos')
     }
 
-    // Comparar con bcrypt
-    const isPasswordValid = await bcrypt.compare(password, user.password)
-    if (!isPasswordValid) {
-      throw new Error('Usuario o contraseña incorrectos')
-    }
-
-    setUser(user as User)
+    const user = data.user as User
+    setUser(user)
     localStorage.setItem('mycalendar_user', JSON.stringify(user))
   }
 

@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { generateSlots } from '../lib/slots'
-import type { Booking, Event, Slot } from '../types'
+import type { Booking, Event, Slot, AvailabilityRule, DateOverride } from '../types'
 import { format, parseISO } from 'date-fns'
 import { es } from 'date-fns/locale'
 
@@ -13,13 +13,15 @@ interface Props {
   booking: Booking
   event: Event
   otherBookings: Booking[]
+  rules?: AvailabilityRule[]
+  overrides?: DateOverride[]
   onClose: () => void
   onUpdated: () => void
 }
 
 type Action = 'reschedule' | 'cancel' | null
 
-export default function BookingActionsModal({ booking, event, otherBookings, onClose, onUpdated }: Props) {
+export default function BookingActionsModal({ booking, event, otherBookings, rules = [], overrides = [], onClose, onUpdated }: Props) {
   const { user } = useAuth()
   const [action, setAction] = useState<Action>(null)
   const [reason, setReason] = useState('')
@@ -47,7 +49,7 @@ export default function BookingActionsModal({ booking, event, otherBookings, onC
     )
   }
 
-  const slots = generateSlots(event, otherBookings.map(b => b.slot_datetime))
+  const slots = generateSlots(event, otherBookings.map(b => b.slot_datetime), rules, overrides)
   const availableSlots = slots.filter(s => s.available && s.datetime !== booking.slot_datetime)
 
   async function handleReschedule(e: React.FormEvent) {

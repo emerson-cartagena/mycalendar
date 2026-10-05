@@ -6,10 +6,11 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import Header from '../components/Header'
 import { generateSlots, WEEKDAY_LABELS } from '../lib/slots'
+import { loadAvailability } from '../lib/availability'
 import BookingActionsModal from '../components/BookingActionsModal'
 import { format, parseISO } from 'date-fns'
 import { es } from 'date-fns/locale'
-import type { Event, Booking } from '../types'
+import type { Event, Booking, AvailabilityRule, DateOverride } from '../types'
 
 interface UserInfo {
   id: string
@@ -22,6 +23,8 @@ export default function ManageEventPage() {
   const { user } = useAuth()
   const [event, setEvent] = useState<Event | null>(null)
   const [bookings, setBookings] = useState<Booking[]>([])
+  const [rules, setRules] = useState<AvailabilityRule[]>([])
+  const [overrides, setOverrides] = useState<DateOverride[]>([])
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
@@ -86,6 +89,11 @@ export default function ManageEventPage() {
       }
     }
     if (bk) setBookings(bk as Booking[])
+    if (ev) {
+      const { rules, overrides } = await loadAvailability((ev as Event).id)
+      setRules(rules)
+      setOverrides(overrides)
+    }
     setLoading(false)
   }
 
@@ -118,7 +126,7 @@ export default function ManageEventPage() {
   if (!event) return <NotFound />
 
   const confirmedBookings = bookings.filter(b => b.status === 'confirmed' || b.status === 'rescheduled')
-  const slots      = generateSlots(event, confirmedBookings.map(b => b.slot_datetime))
+  const slots      = generateSlots(event, confirmedBookings.map(b => b.slot_datetime), rules, overrides)
   const totalSlots = slots.length
   const booked     = confirmedBookings.length
 
@@ -268,6 +276,8 @@ export default function ManageEventPage() {
           booking={selectedBooking}
           event={event}
           otherBookings={confirmedBookings.filter(b => b.id !== selectedBooking.id)}
+          rules={rules}
+          overrides={overrides}
           onClose={() => setSelectedBooking(null)}
           onUpdated={loadData}
         />

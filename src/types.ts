@@ -41,6 +41,31 @@ export interface Booking {
   created_at: string
 }
 
+// Horario adicional de un evento (ej. "sábados 1-5pm" o "solo este domingo 8-12")
+export interface AvailabilityRule {
+  id: string
+  event_id: string
+  weekdays: Weekday[]
+  time_start: string            // HH:mm
+  time_end: string              // HH:mm
+  slot_duration_minutes: number
+  date_start: string | null     // YYYY-MM-DD, null = usa el rango del evento
+  date_end: string | null       // YYYY-MM-DD, null = usa el rango del evento
+  created_at: string
+}
+
+// Excepción para una fecha exacta: horario distinto, o bloqueo total del día
+export interface DateOverride {
+  id: string
+  event_id: string
+  date: string                  // YYYY-MM-DD
+  is_blocked: boolean
+  time_start: string | null     // null si is_blocked
+  time_end: string | null
+  slot_duration_minutes: number | null
+  created_at: string
+}
+
 export interface BookingChange {
   id: string
   booking_id: string

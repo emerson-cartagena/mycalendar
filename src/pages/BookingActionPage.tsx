@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { CheckCircle, AlertCircle, Calendar, Clock, User, Mail } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { generateSlots, formatSlotDateTime } from '../lib/slots'
+import { loadAvailability } from '../lib/availability'
 import type { Event, Booking, Slot } from '../types'
 
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -97,9 +98,12 @@ export default function BookingActionPage() {
             .eq('event_id', eventData.id)
             .eq('status', 'confirmed')
           
+          const { rules, overrides } = await loadAvailability(eventData.id)
           const availableSlots = generateSlots(
             eventData as Event,
-            (bookings as Booking[]) ?? []
+            (bookings as Booking[]) ?? [],
+            rules,
+            overrides
           )
           setSlots(availableSlots)
         }

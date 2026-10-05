@@ -3,13 +3,16 @@ import { useParams } from 'react-router-dom'
 import { Calendar } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { generateSlots } from '../lib/slots'
+import { loadAvailability } from '../lib/availability'
 import BookingWidget from '../components/BookingWidget'
-import type { Event, Booking } from '../types'
+import type { Event, Booking, AvailabilityRule, DateOverride } from '../types'
 
 export default function BookingPage() {
   const { eventSlug } = useParams<{ eventSlug: string }>()
   const [event, setEvent] = useState<Event | null>(null)
   const [bookings, setBookings] = useState<Booking[]>([])
+  const [rules, setRules] = useState<AvailabilityRule[]>([])
+  const [overrides, setOverrides] = useState<DateOverride[]>([])
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
 
@@ -39,6 +42,11 @@ export default function BookingPage() {
       .eq('event_id', ev.id)
       .eq('status', 'confirmed')
     setBookings((bk as Booking[]) ?? [])
+
+    const { rules, overrides } = await loadAvailability(ev.id)
+    setRules(rules)
+    setOverrides(overrides)
+
     setLoading(false)
 
     // Suscripción en tiempo real: si alguien reserva mientras estamos en la página
@@ -77,7 +85,7 @@ export default function BookingPage() {
   if (loading) return <PageLoader />
   if (notFound || !event) return <NotFound />
 
-  const slots = generateSlots(event, bookings.map(b => b.slot_datetime))
+  const slots = generateSlots(event, bookings.map(b => b.slot_datetime), rules, overrides)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white">

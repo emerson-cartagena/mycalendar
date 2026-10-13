@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { Moon, Sun } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { generateSlots } from '../lib/slots'
 import { loadAvailability } from '../lib/availability'
+import { usePublicTheme } from '../lib/usePublicTheme'
 import BookingWidget from '../components/BookingWidget'
 import type { Event, Booking, AvailabilityRule, DateOverride } from '../types'
 
@@ -12,6 +14,7 @@ import type { Event, Booking, AvailabilityRule, DateOverride } from '../types'
  */
 export default function EmbedPage() {
   const { eventSlug } = useParams<{ eventSlug: string }>()
+  const { isDark, toggle } = usePublicTheme()
   const [event, setEvent] = useState<Event | null>(null)
   const [bookings, setBookings] = useState<Booking[]>([])
   const [rules, setRules] = useState<AvailabilityRule[]>([])
@@ -61,13 +64,25 @@ export default function EmbedPage() {
   const slots = generateSlots(event, bookings.map(b => b.slot_datetime), rules, overrides)
 
   return (
-    <div className="bg-white min-h-screen p-4 dark:bg-gray-900">
-      <BookingWidget
-        event={event}
-        slots={slots}
-        onBooked={b => setBookings(prev => [...prev, b])}
-        embedded
-      />
+    <div className={isDark ? 'dark' : ''}>
+      <div className="bg-white min-h-screen p-4 dark:bg-gray-900">
+        <div className="flex justify-end mb-2">
+          <button
+            onClick={toggle}
+            className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-gray-700 transition-colors"
+            aria-label="Cambiar tema"
+            title="Cambiar tema"
+          >
+            {isDark ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
+        </div>
+        <BookingWidget
+          event={event}
+          slots={slots}
+          onBooked={b => setBookings(prev => [...prev, b])}
+          embedded
+        />
+      </div>
     </div>
   )
 }

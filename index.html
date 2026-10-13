@@ -8,7 +8,13 @@
     <meta name="description" content="Reserva reuniones en El Salvador de forma sencilla" />
     <script>
       (function () {
-        // Modo oscuro por defecto: solo se desactiva si el usuario eligió "light" explícitamente.
+        // Las páginas públicas (reserva, embed, acciones por email) manejan su propio
+        // tema local (claro por defecto) y no deben heredar el oscuro del panel.
+        var path = window.location.pathname
+        var isPublicPage = path.indexOf('/book/') === 0 || path.indexOf('/embed/') === 0 || path.indexOf('/booking-action') === 0
+        if (isPublicPage) return
+
+        // Panel: modo oscuro por defecto, solo se desactiva si el usuario eligió "light".
         var stored = localStorage.getItem('theme')
         if (stored !== 'light') document.documentElement.classList.add('dark')
       })()

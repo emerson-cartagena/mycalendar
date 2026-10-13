@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Calendar } from 'lucide-react'
+import { Calendar, Moon, Sun } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { generateSlots } from '../lib/slots'
 import { loadAvailability } from '../lib/availability'
+import { usePublicTheme } from '../lib/usePublicTheme'
 import BookingWidget from '../components/BookingWidget'
 import type { Event, Booking, AvailabilityRule, DateOverride } from '../types'
 
 export default function BookingPage() {
   const { eventSlug } = useParams<{ eventSlug: string }>()
+  const { isDark, toggle } = usePublicTheme()
   const [event, setEvent] = useState<Event | null>(null)
   const [bookings, setBookings] = useState<Booking[]>([])
   const [rules, setRules] = useState<AvailabilityRule[]>([])
@@ -88,17 +90,29 @@ export default function BookingPage() {
   const slots = generateSlots(event, bookings.map(b => b.slot_datetime), rules, overrides)
 
   return (
+    <div className={isDark ? 'dark' : ''}>
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white dark:from-gray-900 dark:to-gray-900">
       <header className="bg-white border-b border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-2">
-          <Calendar className="text-primary-600" size={22} />
-          <span className="font-bold text-lg text-gray-900 dark:text-gray-100">MyCalendar</span>
+        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Calendar className="text-primary-600" size={22} />
+            <span className="font-bold text-lg text-gray-900 dark:text-gray-100">MyCalendar</span>
+          </div>
+          <button
+            onClick={toggle}
+            className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
+            aria-label="Cambiar tema"
+            title="Cambiar tema"
+          >
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-10">
         <BookingWidget event={event} slots={slots} onBooked={onBooked} />
       </main>
+    </div>
     </div>
   )
 }

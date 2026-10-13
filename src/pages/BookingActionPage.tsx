@@ -1,19 +1,40 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { CheckCircle, AlertCircle, Calendar, Clock, User, Mail } from 'lucide-react'
+import { CheckCircle, AlertCircle, Calendar, Clock, User, Mail, Moon, Sun } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { generateSlots, formatSlotDateTime } from '../lib/slots'
 import { loadAvailability } from '../lib/availability'
+import { usePublicTheme } from '../lib/usePublicTheme'
 import type { Event, Booking, Slot } from '../types'
 
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 
+/** Envuelve cada vista pública con el tema local (claro por defecto) y su toggle. */
+function PublicThemeWrapper({ isDark, toggle, children }: { isDark: boolean; toggle: () => void; children: ReactNode }) {
+  return (
+    <div className={isDark ? 'dark' : ''}>
+      <div className="relative">
+        <button
+          onClick={toggle}
+          className="absolute top-4 right-4 z-10 p-2 rounded-lg text-gray-400 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-gray-800 transition-colors"
+          aria-label="Cambiar tema"
+          title="Cambiar tema"
+        >
+          {isDark ? <Sun size={16} /> : <Moon size={16} />}
+        </button>
+        {children}
+      </div>
+    </div>
+  )
+}
+
 export default function BookingActionPage() {
   const [searchParams] = useSearchParams()
-  
+  const { isDark, toggle } = usePublicTheme()
+
   const token = searchParams.get('token')
   const action = searchParams.get('action')
-  
+
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -281,18 +302,21 @@ export default function BookingActionPage() {
   // ── LOADING ──
   if (loading) {
     return (
+      <PublicThemeWrapper isDark={isDark} toggle={toggle}>
       <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-400">Procesando tu solicitud...</p>
         </div>
       </div>
+      </PublicThemeWrapper>
     )
   }
 
   // ── ERROR ──
   if (error && !success) {
     return (
+      <PublicThemeWrapper isDark={isDark} toggle={toggle}>
       <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full dark:bg-gray-800">
           <div className="flex justify-center mb-4">
@@ -304,12 +328,14 @@ export default function BookingActionPage() {
           <p className="text-gray-600 text-center mb-6 dark:text-gray-400">{error}</p>
         </div>
       </div>
+      </PublicThemeWrapper>
     )
   }
 
   // ── CANCELLATION SUCCESS ──
   if (success && action === 'cancel') {
     return (
+      <PublicThemeWrapper isDark={isDark} toggle={toggle}>
       <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full dark:bg-gray-800">
           <div className="flex justify-center mb-4">
@@ -344,6 +370,7 @@ export default function BookingActionPage() {
           </p>
         </div>
       </div>
+      </PublicThemeWrapper>
     )
   }
 
@@ -351,16 +378,19 @@ export default function BookingActionPage() {
   if (action === 'cancel' && booking && !success) {
     if (cancelling) {
       return (
+        <PublicThemeWrapper isDark={isDark} toggle={toggle}>
         <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
             <p className="text-gray-600 dark:text-gray-400">Cancelando reserva...</p>
           </div>
         </div>
+        </PublicThemeWrapper>
       )
     }
 
     return (
+      <PublicThemeWrapper isDark={isDark} toggle={toggle}>
       <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4 py-8">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full dark:bg-gray-800">
           <AlertCircle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
@@ -427,6 +457,7 @@ export default function BookingActionPage() {
           </form>
         </div>
       </div>
+      </PublicThemeWrapper>
     )
   }
 
@@ -434,17 +465,20 @@ export default function BookingActionPage() {
   if (action === 'reschedule' && booking && event) {
     if (rescheduling) {
       return (
+        <PublicThemeWrapper isDark={isDark} toggle={toggle}>
         <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
             <p className="text-gray-600 dark:text-gray-400">Guardando los cambios...</p>
           </div>
         </div>
+        </PublicThemeWrapper>
       )
     }
 
     if (success) {
       return (
+        <PublicThemeWrapper isDark={isDark} toggle={toggle}>
         <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4">
           <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full dark:bg-gray-800">
             <div className="flex justify-center mb-4">
@@ -473,11 +507,13 @@ export default function BookingActionPage() {
             </p>
           </div>
         </div>
+        </PublicThemeWrapper>
       )
     }
 
     // Show slot selection
     return (
+      <PublicThemeWrapper isDark={isDark} toggle={toggle}>
       <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900">
         <div className="max-w-2xl mx-auto px-4 py-8">
           <div className="bg-white rounded-lg shadow-lg p-8 dark:bg-gray-800">
@@ -569,6 +605,7 @@ export default function BookingActionPage() {
           </div>
         </div>
       </div>
+      </PublicThemeWrapper>
     )
   }
 

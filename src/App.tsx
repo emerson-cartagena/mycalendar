@@ -21,10 +21,26 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+// Rutas del panel (login + área protegida): tema oscuro por defecto, con toggle en el Header.
+function AdminApp() {
+  return (
+    <ThemeProvider>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path="/create" element={<ProtectedRoute><CreateEventPage /></ProtectedRoute>} />
+        <Route path="/edit/:eventId" element={<ProtectedRoute><EditEventPage /></ProtectedRoute>} />
+        <Route path="/manage/:eventId" element={<ProtectedRoute><ManageEventPage /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><AdminPanelPage /></ProtectedRoute>} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </ThemeProvider>
+  )
+}
+
 function App() {
   return (
     <BrowserRouter>
-      <ThemeProvider>
       <AuthProvider>
         <Toaster
           position="top-right"
@@ -34,24 +50,15 @@ function App() {
           }}
         />
         <Routes>
-          {/* Public routes */}
-          <Route path="/login" element={<LoginPage />} />
+          {/* Enlaces públicos: siempre claros por defecto, con su propio toggle (no heredan el tema del panel) */}
           <Route path="/book/:eventSlug" element={<BookingPage />} />
           <Route path="/embed/:eventSlug" element={<EmbedPage />} />
           <Route path="/booking-action" element={<BookingActionPage />} />
 
-          {/* Protected routes */}
-          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-          <Route path="/create" element={<ProtectedRoute><CreateEventPage /></ProtectedRoute>} />
-          <Route path="/edit/:eventId" element={<ProtectedRoute><EditEventPage /></ProtectedRoute>} />
-          <Route path="/manage/:eventId" element={<ProtectedRoute><ManageEventPage /></ProtectedRoute>} />
-          <Route path="/admin" element={<ProtectedRoute><AdminPanelPage /></ProtectedRoute>} />
-
-          {/* Redirect root to dashboard */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          {/* Panel: login + rutas protegidas */}
+          <Route path="/*" element={<AdminApp />} />
         </Routes>
       </AuthProvider>
-      </ThemeProvider>
     </BrowserRouter>
   )
 }

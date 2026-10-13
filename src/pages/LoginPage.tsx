@@ -52,20 +52,20 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex flex-col items-center gap-2 mb-8">
           <div className="flex items-center gap-2">
             <Calendar className="text-primary-600" size={32} />
-            <span className="text-2xl font-bold text-gray-900">MyCalendar</span>
+            <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">MyCalendar</span>
           </div>
-          <p className="text-sm text-gray-500">Reservas online para profesionales</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Reservas online para profesionales</p>
         </div>
 
         {/* Card */}
         <div className="card">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">Iniciar sesión</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-6 dark:text-gray-100">Iniciar sesión</h1>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>

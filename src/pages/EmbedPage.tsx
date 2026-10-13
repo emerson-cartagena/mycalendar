@@ -56,12 +56,12 @@ export default function EmbedPage() {
       </div>
     )
   }
-  if (!event) return <p className="p-4 text-gray-500 text-sm">Evento no encontrado.</p>
+  if (!event) return <p className="p-4 text-gray-500 text-sm dark:text-gray-400">Evento no encontrado.</p>
 
   const slots = generateSlots(event, bookings.map(b => b.slot_datetime), rules, overrides)
 
   return (
-    <div className="bg-white min-h-screen p-4">
+    <div className="bg-white min-h-screen p-4 dark:bg-gray-900">
       <BookingWidget
         event={event}
         slots={slots}

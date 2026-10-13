@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { ThemeProvider } from './contexts/ThemeContext'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import CreateEventPage from './pages/CreateEventPage'
@@ -14,7 +15,7 @@ import BookingActionPage from './pages/BookingActionPage'
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
   
-  if (loading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" /></div>
+  if (loading) return <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" /></div>
   if (!user) return <Navigate to="/login" replace />
   
   return <>{children}</>
@@ -23,8 +24,15 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function App() {
   return (
     <BrowserRouter>
+      <ThemeProvider>
       <AuthProvider>
-        <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            className: '!bg-white !text-gray-900 dark:!bg-gray-800 dark:!text-gray-100',
+          }}
+        />
         <Routes>
           {/* Public routes */}
           <Route path="/login" element={<LoginPage />} />
@@ -43,6 +51,7 @@ function App() {
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   )
 }

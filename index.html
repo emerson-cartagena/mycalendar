@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MyCalendar</title>
     <meta name="description" content="Reserva reuniones en El Salvador de forma sencilla" />
+    <script>
+      (function () {
+        // Modo oscuro por defecto: solo se desactiva si el usuario eligió "light" explícitamente.
+        var stored = localStorage.getItem('theme')
+        if (stored !== 'light') document.documentElement.classList.add('dark')
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

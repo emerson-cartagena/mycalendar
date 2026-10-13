@@ -88,11 +88,11 @@ export default function BookingPage() {
   const slots = generateSlots(event, bookings.map(b => b.slot_datetime), rules, overrides)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white">
-      <header className="bg-white border-b border-gray-100 shadow-sm">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white dark:from-gray-900 dark:to-gray-900">
+      <header className="bg-white border-b border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-2">
           <Calendar className="text-primary-600" size={22} />
-          <span className="font-bold text-lg text-gray-900">MyCalendar</span>
+          <span className="font-bold text-lg text-gray-900 dark:text-gray-100">MyCalendar</span>
         </div>
       </header>
 
@@ -105,7 +105,7 @@ export default function BookingPage() {
 
 function PageLoader() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center dark:bg-gray-900">
       <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600" />
     </div>
   )
@@ -113,8 +113,8 @@ function PageLoader() {
 
 function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p className="text-gray-500">Este evento no existe o ha vencido.</p>
+    <div className="min-h-screen flex items-center justify-center dark:bg-gray-900">
+      <p className="text-gray-500 dark:text-gray-400">Este evento no existe o ha vencido.</p>
     </div>
   )
 }

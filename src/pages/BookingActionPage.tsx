@@ -281,10 +281,10 @@ export default function BookingActionPage() {
   // ── LOADING ──
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Procesando tu solicitud...</p>
+          <p className="text-gray-600 dark:text-gray-400">Procesando tu solicitud...</p>
         </div>
       </div>
     )
@@ -293,15 +293,15 @@ export default function BookingActionPage() {
   // ── ERROR ──
   if (error && !success) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white flex items-center justify-center px-4">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+      <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full dark:bg-gray-800">
           <div className="flex justify-center mb-4">
             <AlertCircle className="w-12 h-12 text-red-500" />
           </div>
-          <h1 className="text-2xl font-bold text-center text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-center text-gray-900 mb-2 dark:text-gray-100">
             Error
           </h1>
-          <p className="text-gray-600 text-center mb-6">{error}</p>
+          <p className="text-gray-600 text-center mb-6 dark:text-gray-400">{error}</p>
         </div>
       </div>
     )
@@ -310,36 +310,36 @@ export default function BookingActionPage() {
   // ── CANCELLATION SUCCESS ──
   if (success && action === 'cancel') {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white flex items-center justify-center px-4">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+      <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full dark:bg-gray-800">
           <div className="flex justify-center mb-4">
             <CheckCircle className="w-12 h-12 text-green-500" />
           </div>
-          <h1 className="text-2xl font-bold text-center text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-center text-gray-900 mb-2 dark:text-gray-100">
             Reserva Cancelada
           </h1>
-          <p className="text-gray-600 text-center mb-6">
+          <p className="text-gray-600 text-center mb-6 dark:text-gray-400">
             Tu reserva ha sido cancelada exitosamente.
           </p>
-          
+
           {booking && (
-            <div className="bg-gray-50 rounded-lg p-4 mb-6 space-y-3">
-              <div className="flex items-center gap-2 text-sm text-gray-700">
+            <div className="bg-gray-50 rounded-lg p-4 mb-6 space-y-3 dark:bg-gray-700/50">
+              <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <Calendar className="w-4 h-4 text-gray-500" />
                 <span>{formatSlotDateTime(booking.slot_datetime, true)}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-700">
+              <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <User className="w-4 h-4 text-gray-500" />
                 <span>{booking.attendee_name}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-700">
+              <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <Mail className="w-4 h-4 text-gray-500" />
                 <span>{booking.attendee_email}</span>
               </div>
             </div>
           )}
 
-          <p className="text-gray-600 text-sm text-center mb-6">
+          <p className="text-gray-600 text-sm text-center mb-6 dark:text-gray-400">
             Se ha enviado una confirmación de cancelación a tu correo.
           </p>
         </div>
@@ -351,35 +351,35 @@ export default function BookingActionPage() {
   if (action === 'cancel' && booking && !success) {
     if (cancelling) {
       return (
-        <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white flex items-center justify-center px-4">
+        <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Cancelando reserva...</p>
+            <p className="text-gray-600 dark:text-gray-400">Cancelando reserva...</p>
           </div>
         </div>
       )
     }
 
     return (
-      <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white flex items-center justify-center px-4 py-8">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+      <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4 py-8">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full dark:bg-gray-800">
           <AlertCircle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
-          
-          <h1 className="text-2xl font-bold text-center text-gray-900 mb-2">
+
+          <h1 className="text-2xl font-bold text-center text-gray-900 mb-2 dark:text-gray-100">
             Cancelar Reserva
           </h1>
-          
-          <p className="text-gray-600 text-center mb-6">
+
+          <p className="text-gray-600 text-center mb-6 dark:text-gray-400">
             ¿Está seguro que desea cancelar esta reserva?
           </p>
 
           {booking && (
-            <div className="bg-gray-50 rounded-lg p-4 mb-6 space-y-3">
-              <div className="flex items-center gap-2 text-sm text-gray-700">
+            <div className="bg-gray-50 rounded-lg p-4 mb-6 space-y-3 dark:bg-gray-700/50">
+              <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <Calendar className="w-4 h-4 text-gray-500" />
                 <span>{formatSlotDateTime(booking.slot_datetime, true)}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-700">
+              <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <User className="w-4 h-4 text-gray-500" />
                 <span>{booking.attendee_name}</span>
               </div>
@@ -388,12 +388,12 @@ export default function BookingActionPage() {
 
           <form onSubmit={handleCancelConfirm} className="space-y-4">
             <div>
-              <label htmlFor="reason" className="block text-sm font-semibold text-gray-800 mb-2">
+              <label htmlFor="reason" className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-200">
                 Razón de cancelación <span className="text-red-500">*</span>
               </label>
               <textarea
                 id="reason"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
                 rows={3}
                 placeholder="Cuéntanos por qué necesitas cancelar. Esto nos ayuda a mejorar..."
                 value={cancellationReason}
@@ -403,8 +403,8 @@ export default function BookingActionPage() {
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
-                <p className="text-sm text-red-800">{error}</p>
+              <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 dark:bg-red-950/40 dark:border-red-900">
+                <p className="text-sm text-red-800 dark:text-red-300">{error}</p>
               </div>
             )}
 
@@ -412,14 +412,14 @@ export default function BookingActionPage() {
               <button
                 type="submit"
                 disabled={!cancellationReason.trim() || cancelling}
-                className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 text-white font-semibold py-2 px-4 rounded-lg transition"
+                className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 text-white font-semibold py-2 px-4 rounded-lg transition dark:disabled:bg-gray-700"
               >
                 {cancelling ? 'Cancelando...' : 'Confirmar Cancelación'}
               </button>
               <button
                 type="button"
                 onClick={() => window.close()}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition"
+                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200"
               >
                 Cerrar
               </button>
@@ -434,10 +434,10 @@ export default function BookingActionPage() {
   if (action === 'reschedule' && booking && event) {
     if (rescheduling) {
       return (
-        <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white flex items-center justify-center px-4">
+        <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Guardando los cambios...</p>
+            <p className="text-gray-600 dark:text-gray-400">Guardando los cambios...</p>
           </div>
         </div>
       )
@@ -445,30 +445,30 @@ export default function BookingActionPage() {
 
     if (success) {
       return (
-        <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white flex items-center justify-center px-4">
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+        <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900 flex items-center justify-center px-4">
+          <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full dark:bg-gray-800">
             <div className="flex justify-center mb-4">
               <CheckCircle className="w-12 h-12 text-green-500" />
             </div>
-            <h1 className="text-2xl font-bold text-center text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-center text-gray-900 mb-2 dark:text-gray-100">
               Reprogramación Exitosa
             </h1>
-            <p className="text-gray-600 text-center mb-6">
+            <p className="text-gray-600 text-center mb-6 dark:text-gray-400">
               Tu reserva ha sido reprogramada exitosamente.
             </p>
-            
-            <div className="bg-gray-50 rounded-lg p-4 mb-6 space-y-3">
-              <div className="flex items-center gap-2 text-sm text-gray-700">
+
+            <div className="bg-gray-50 rounded-lg p-4 mb-6 space-y-3 dark:bg-gray-700/50">
+              <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <Calendar className="w-4 h-4 text-gray-500" />
                 <span>{formatSlotDateTime(booking.slot_datetime, true)}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-700">
+              <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <User className="w-4 h-4 text-gray-500" />
                 <span>{booking.attendee_name}</span>
               </div>
             </div>
 
-            <p className="text-gray-600 text-sm text-center mb-6">
+            <p className="text-gray-600 text-sm text-center mb-6 dark:text-gray-400">
               Se ha enviado una confirmación de reprogramación a tu correo con los nuevos detalles.
             </p>
           </div>
@@ -478,44 +478,44 @@ export default function BookingActionPage() {
 
     // Show slot selection
     return (
-      <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white">
+      <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-900">
         <div className="max-w-2xl mx-auto px-4 py-8">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="bg-white rounded-lg shadow-lg p-8 dark:bg-gray-800">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2 dark:text-gray-100">
               Reprogramar Reserva
             </h1>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 mb-6 dark:text-gray-400">
               Selecciona una nueva fecha y hora para tu reserva con {event.title}
             </p>
 
-            <div className="grid grid-cols-2 gap-4 mb-8 p-4 bg-gray-50 rounded-lg">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 p-4 bg-gray-50 rounded-lg dark:bg-gray-700/50">
               <div>
-                <p className="text-xs text-gray-500 uppercase font-semibold mb-1">
+                <p className="text-xs text-gray-500 uppercase font-semibold mb-1 dark:text-gray-400">
                   Hora Actual
                 </p>
-                <p className="font-semibold text-gray-900">
+                <p className="font-semibold text-gray-900 dark:text-gray-100">
                   {formatSlotDateTime(booking.slot_datetime, true)}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 uppercase font-semibold mb-1">
+                <p className="text-xs text-gray-500 uppercase font-semibold mb-1 dark:text-gray-400">
                   Asistente
                 </p>
-                <p className="font-semibold text-gray-900">
+                <p className="font-semibold text-gray-900 dark:text-gray-100">
                   {booking.attendee_name}
                 </p>
               </div>
             </div>
 
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-100">
                 Selecciona una Nueva Hora
               </h2>
-              
+
               {slots.filter(s => s.available).length === 0 ? (
                 <div className="text-center py-8">
                   <AlertCircle className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-400">
                     No hay horarios disponibles en este momento.
                   </p>
                 </div>
@@ -527,8 +527,8 @@ export default function BookingActionPage() {
                       onClick={() => setSelectedSlot(slot.datetime)}
                       className={`p-3 rounded-lg border-2 transition font-medium ${
                         selectedSlot === slot.datetime
-                          ? 'border-primary-600 bg-primary-50 text-primary-900'
-                          : 'border-gray-200 hover:border-primary-300 text-gray-900'
+                          ? 'border-primary-600 bg-primary-50 text-primary-900 dark:bg-primary-950/40 dark:text-primary-200'
+                          : 'border-gray-200 hover:border-primary-300 text-gray-900 dark:border-gray-700 dark:hover:border-primary-600 dark:text-gray-100'
                       }`}
                     >
                       <div className="flex items-center justify-center gap-2">
@@ -541,12 +541,12 @@ export default function BookingActionPage() {
               )}
 
               <div className="mb-6">
-                <label htmlFor="reschedule-reason" className="block text-sm font-semibold text-gray-800 mb-2">
+                <label htmlFor="reschedule-reason" className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-200">
                   Razón de cambio (opcional)
                 </label>
                 <textarea
                   id="reschedule-reason"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
                   rows={2}
                   placeholder="Ej: Cambio de horario de trabajo..."
                   value={rescheduleReason}
@@ -560,7 +560,7 @@ export default function BookingActionPage() {
                 className={`w-full py-3 px-4 rounded-lg font-semibold transition ${
                   selectedSlot
                     ? 'bg-primary-600 hover:bg-primary-700 text-white'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500'
                 }`}
               >
                 Confirmar Nueva Fecha

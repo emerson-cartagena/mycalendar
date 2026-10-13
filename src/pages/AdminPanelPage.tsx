@@ -128,20 +128,20 @@ export default function AdminPanelPage() {
   if (!user || user.role !== 'admin') return null
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <button
           onClick={() => navigate('/dashboard')}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-2"
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-2 dark:text-gray-400 dark:hover:text-gray-100"
         >
           <ArrowLeft size={18} /> Volver al dashboard
         </button>
 
         {/* Botón crear usuario */}
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Gestionar usuarios</h1>
+        <div className="flex justify-between items-center gap-3 flex-wrap">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Gestionar usuarios</h1>
           <button
             onClick={() => setShowForm(!showForm)}
             className="btn-primary inline-flex items-center gap-2"
@@ -153,7 +153,7 @@ export default function AdminPanelPage() {
         {/* Formulario crear/editar usuario */}
         {(showForm || editingUser) && (
           <div className="card">
-            <h2 className="font-semibold text-gray-800 mb-4">
+            <h2 className="font-semibold text-gray-800 mb-4 dark:text-gray-200">
               {editingUser ? `Editar ${editingUser.email}` : 'Nuevo usuario'}
             </h2>
             <form onSubmit={editingUser ? handleEditUser : handleCreateUser} className="space-y-4">
@@ -218,32 +218,32 @@ export default function AdminPanelPage() {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
             </div>
           ) : users.length === 0 ? (
-            <p className="text-gray-500 text-center py-6">No hay usuarios aún.</p>
+            <p className="text-gray-500 text-center py-6 dark:text-gray-400">No hay usuarios aún.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100">
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Correo</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Rol</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Creado</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Acciones</th>
+                  <tr className="border-b border-gray-100 dark:border-gray-700">
+                    <th className="text-left py-3 px-4 font-medium text-gray-700 dark:text-gray-300">Correo</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-700 dark:text-gray-300">Rol</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-700 dark:text-gray-300">Creado</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-700 dark:text-gray-300">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map(u => (
-                    <tr key={u.id} className="border-b border-gray-50 hover:bg-gray-50">
-                      <td className="py-3 px-4">{u.email}</td>
+                    <tr key={u.id} className="border-b border-gray-50 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-700/50">
+                      <td className="py-3 px-4 dark:text-gray-200">{u.email}</td>
                       <td className="py-3 px-4">
                         {u.role === 'admin' ? (
-                          <span className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs font-medium">
+                          <span className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs font-medium dark:bg-purple-950/50 dark:text-purple-300">
                             <Shield size={12} /> Administrador
                           </span>
                         ) : (
-                          <span className="text-gray-600">Usuario</span>
+                          <span className="text-gray-600 dark:text-gray-400">Usuario</span>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-gray-500">
+                      <td className="py-3 px-4 text-gray-500 dark:text-gray-400">
                         {new Date(u.created_at).toLocaleDateString()}
                       </td>
                       <td className="py-3 px-4">
@@ -252,14 +252,14 @@ export default function AdminPanelPage() {
                             <>
                               <button
                                 onClick={() => openEditModal(u)}
-                                className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 p-1 rounded transition-colors"
+                                className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 p-1 rounded transition-colors dark:text-blue-400 dark:hover:bg-blue-950/40"
                                 title="Editar usuario"
                               >
                                 <Edit2 size={16} />
                               </button>
                               <button
                                 onClick={() => handleDeleteUser(u.id, u.email)}
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50 p-1 rounded transition-colors"
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50 p-1 rounded transition-colors dark:text-red-400 dark:hover:bg-red-950/40"
                                 title="Eliminar usuario"
                               >
                                 <Trash2 size={16} />

@@ -91,7 +91,7 @@ export default function DashboardPage() {
   })
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
 
       <main className="max-w-6xl mx-auto px-4 py-8">
@@ -106,7 +106,7 @@ export default function DashboardPage() {
           <PageLoader />
         ) : events.length === 0 ? (
           <div className="card text-center py-12">
-            <p className="text-gray-500">No tienes eventos aún.</p>
+            <p className="text-gray-500 dark:text-gray-400">No tienes eventos aún.</p>
             <Link to="/create" className="text-primary-600 hover:underline text-sm mt-2 inline-block">
               Crear uno ahora →
             </Link>
@@ -133,17 +133,17 @@ export default function DashboardPage() {
         {/* Modal de confirmación de eliminación */}
         {deleteConfirm && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-lg max-w-sm w-full">
+            <div className="bg-white rounded-lg shadow-lg max-w-sm w-full dark:bg-gray-800">
               <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">¿Eliminar evento?</h3>
-                <p className="text-gray-600 text-sm mb-4">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 dark:text-gray-100">¿Eliminar evento?</h3>
+                <p className="text-gray-600 text-sm mb-4 dark:text-gray-400">
                   Se eliminarán el evento "{deleteConfirm.title}" y todas sus reservas. Esta acción no se puede deshacer.
                 </p>
                 <div className="flex gap-3">
                   <button
                     onClick={() => setDeleteConfirm(null)}
                     disabled={deleting !== null}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 disabled:opacity-50"
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
                   >
                     Cancelar
                   </button>
@@ -184,7 +184,7 @@ function EventGroup({ title, icon, events, isPast, collapsible, defaultCollapsed
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+        <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 dark:text-gray-100">
           <span>{icon}</span> {title} ({events.length})
         </h2>
         {collapsible && (
@@ -200,15 +200,15 @@ function EventGroup({ title, icon, events, isPast, collapsible, defaultCollapsed
         {events.map(e => (
           <div key={e.id} className="card p-4 flex items-start justify-between hover:shadow-md transition-shadow group">
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-gray-900">{e.title}</h3>
-              <p className="text-sm text-gray-500 mt-1">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100">{e.title}</h3>
+              <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">
                 {e.date_start} a {e.date_end} • {e.time_start}-{e.time_end}
               </p>
               {isAdmin && owners?.has(e.user_id) && (
-                <p className="text-xs text-gray-400 mt-1">Organizado por: {owners.get(e.user_id)}</p>
+                <p className="text-xs text-gray-400 mt-1 dark:text-gray-500">Organizado por: {owners.get(e.user_id)}</p>
               )}
               {e.description && (
-                <p className="text-sm text-gray-600 mt-1 line-clamp-1">{e.description}</p>
+                <p className="text-sm text-gray-600 mt-1 line-clamp-1 dark:text-gray-400">{e.description}</p>
               )}
             </div>
             <div className="flex gap-2 ml-4 flex-shrink-0">
@@ -220,7 +220,7 @@ function EventGroup({ title, icon, events, isPast, collapsible, defaultCollapsed
               <div className="relative">
                 <button
                   onClick={() => setOpenMenu(openMenu === e.id ? null : e.id)}
-                  className="text-gray-400 hover:text-gray-600 p-2 hover:bg-gray-100 rounded transition-colors"
+                  className="text-gray-400 hover:text-gray-600 p-2 hover:bg-gray-100 rounded transition-colors dark:hover:text-gray-200 dark:hover:bg-gray-700"
                   title="Más opciones"
                 >
                   <MoreVertical size={16} />
@@ -228,11 +228,11 @@ function EventGroup({ title, icon, events, isPast, collapsible, defaultCollapsed
 
                 {/* Dropdown */}
                 {openMenu === e.id && (
-                  <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-100 z-10">
+                  <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-100 z-10 dark:bg-gray-800 dark:border-gray-700">
                     {!isPast && (
                       <Link
                         to={`/edit/${e.id}`}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 first:rounded-t-lg flex items-center gap-2"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 first:rounded-t-lg flex items-center gap-2 dark:text-gray-300 dark:hover:bg-gray-700"
                         onClick={() => setOpenMenu(null)}
                       >
                         <Edit2 size={14} /> Editar
@@ -243,7 +243,7 @@ function EventGroup({ title, icon, events, isPast, collapsible, defaultCollapsed
                         setOpenMenu(null)
                         onDelete(e.id, e.title)
                       }}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 last:rounded-b-lg flex items-center gap-2"
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 last:rounded-b-lg flex items-center gap-2 dark:hover:bg-red-950/40"
                     >
                       <Trash2 size={14} /> Eliminar
                     </button>

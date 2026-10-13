@@ -34,15 +34,15 @@ export default function BookingActionsModal({ booking, event, otherBookings, rul
   if (!canManage) {
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-xl shadow-lg max-w-md w-full">
-          <div className="flex items-center justify-between p-4 border-b border-gray-100">
-            <h2 className="font-semibold text-gray-900">Acceso denegado</h2>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+        <div className="bg-white rounded-xl shadow-lg max-w-md w-full dark:bg-gray-800">
+          <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-700">
+            <h2 className="font-semibold text-gray-900 dark:text-gray-100">Acceso denegado</h2>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
               <X size={18} />
             </button>
           </div>
           <div className="p-4">
-            <p className="text-gray-600 text-sm">No tienes permiso para gestionar esta reserva.</p>
+            <p className="text-gray-600 text-sm dark:text-gray-400">No tienes permiso para gestionar esta reserva.</p>
           </div>
         </div>
       </div>
@@ -188,21 +188,21 @@ export default function BookingActionsModal({ booking, event, otherBookings, rul
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[85vh] overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[85vh] overflow-y-auto dark:bg-gray-800">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-100 sticky top-0 bg-white">
-          <h2 className="font-semibold text-gray-900">Gestionar reserva</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+        <div className="flex items-center justify-between p-4 border-b border-gray-100 sticky top-0 bg-white dark:bg-gray-800 dark:border-gray-700">
+          <h2 className="font-semibold text-gray-900 dark:text-gray-100">Gestionar reserva</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
             <X size={18} />
           </button>
         </div>
 
         {/* Content */}
         <div className="p-4">
-          <div className="bg-gray-50 rounded-lg p-3 mb-4 text-sm">
-            <p className="font-medium text-gray-900">{booking.attendee_name}</p>
-            <p className="text-gray-600">{booking.attendee_email}</p>
-            <p className="text-primary-600 mt-1">
+          <div className="bg-gray-50 rounded-lg p-3 mb-4 text-sm dark:bg-gray-700/50">
+            <p className="font-medium text-gray-900 dark:text-gray-100">{booking.attendee_name}</p>
+            <p className="text-gray-600 dark:text-gray-400">{booking.attendee_email}</p>
+            <p className="text-primary-600 mt-1 dark:text-primary-400">
               {format(parseISO(booking.slot_datetime), "EEE d MMM · h:mm aa", { locale: es })}
             </p>
           </div>
@@ -211,13 +211,13 @@ export default function BookingActionsModal({ booking, event, otherBookings, rul
             <div className="space-y-3">
               <button
                 onClick={() => setAction('reschedule')}
-                className="w-full py-2.5 px-3 rounded-lg border border-primary-300 bg-primary-50 text-primary-700 hover:bg-primary-100 font-medium text-sm flex items-center justify-center gap-2"
+                className="w-full py-2.5 px-3 rounded-lg border border-primary-300 bg-primary-50 text-primary-700 hover:bg-primary-100 font-medium text-sm flex items-center justify-center gap-2 dark:border-primary-800 dark:bg-primary-950/40 dark:text-primary-300 dark:hover:bg-primary-900/50"
               >
                 <Calendar size={16} /> Reprogramar
               </button>
               <button
                 onClick={() => setAction('cancel')}
-                className="w-full py-2.5 px-3 rounded-lg border border-red-300 bg-red-50 text-red-700 hover:bg-red-100 font-medium text-sm flex items-center justify-center gap-2"
+                className="w-full py-2.5 px-3 rounded-lg border border-red-300 bg-red-50 text-red-700 hover:bg-red-100 font-medium text-sm flex items-center justify-center gap-2 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300 dark:hover:bg-red-950/70"
               >
                 <XCircle size={16} /> Cancelar
               </button>
@@ -237,7 +237,7 @@ export default function BookingActionsModal({ booking, event, otherBookings, rul
                       className={`py-2 px-2 rounded text-xs font-medium border transition-colors flex flex-col items-center gap-1 ${
                         selectedSlot?.datetime === s.datetime
                           ? 'bg-primary-600 text-white border-primary-600'
-                          : 'border-gray-300 bg-white hover:border-primary-300'
+                          : 'border-gray-300 bg-white hover:border-primary-300 dark:border-gray-600 dark:bg-gray-800 dark:hover:border-primary-600'
                       }`}
                     >
                       <span className="text-xs">{format(parseISO(s.datetime), 'EEE d MMM', { locale: es })}</span>
@@ -246,7 +246,7 @@ export default function BookingActionsModal({ booking, event, otherBookings, rul
                   ))}
                 </div>
                 {availableSlots.length === 0 && (
-                  <p className="text-xs text-gray-500 mt-1">No hay horarios disponibles</p>
+                  <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">No hay horarios disponibles</p>
                 )}
               </div>
 
@@ -295,7 +295,7 @@ export default function BookingActionsModal({ booking, event, otherBookings, rul
                 />
               </div>
 
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 El asistente recibirá una notificación con el motivo de la cancelación.
               </p>
 

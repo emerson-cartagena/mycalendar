@@ -131,13 +131,13 @@ export default function ManageEventPage() {
   const booked     = confirmedBookings.length
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <button
           onClick={() => navigate('/dashboard')}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-2"
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-2 dark:text-gray-400 dark:hover:text-gray-100"
         >
           <ArrowLeft size={18} /> Volver a dashboard
         </button>
@@ -146,14 +146,14 @@ export default function ManageEventPage() {
         <div className="card">
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-gray-900">{event.title}</h1>
-              {event.description && <p className="text-gray-500 mt-1">{event.description}</p>}
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{event.title}</h1>
+              {event.description && <p className="text-gray-500 mt-1 dark:text-gray-400">{event.description}</p>}
               {user?.role === 'admin' && (
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-sm text-gray-500 mt-2 dark:text-gray-400">
                   Organizado por: <span className="font-medium">{eventOwner?.email || event.user_id}</span>
                 </p>
               )}
-              <div className="flex flex-wrap gap-3 mt-3 text-sm text-gray-600">
+              <div className="flex flex-wrap gap-3 mt-3 text-sm text-gray-600 dark:text-gray-400">
                 <span className="flex items-center gap-1">
                   <Clock size={14} />
                   {format(parseISO(event.date_start), 'd MMM', { locale: es })} –{' '}
@@ -173,8 +173,8 @@ export default function ManageEventPage() {
             <div className="flex flex-col gap-2 flex-shrink-0">
               <div className="flex gap-2">
                 <Stat label="Slots totales" value={totalSlots} />
-                <Stat label="Reservados" value={booked} color="text-primary-600" />
-                <Stat label="Disponibles" value={totalSlots - booked} color="text-green-600" />
+                <Stat label="Reservados" value={booked} color="text-primary-600 dark:text-primary-400" />
+                <Stat label="Disponibles" value={totalSlots - booked} color="text-green-600 dark:text-green-400" />
               </div>
               <div className="flex gap-2">
                 <Link to={`/edit/${eventId}`} className="btn-secondary text-sm flex items-center gap-1 whitespace-nowrap">
@@ -182,7 +182,7 @@ export default function ManageEventPage() {
                 </Link>
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="px-3 py-2 text-sm bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors flex items-center gap-1 whitespace-nowrap"
+                  className="px-3 py-2 text-sm bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors flex items-center gap-1 whitespace-nowrap dark:bg-red-950/40 dark:text-red-400 dark:hover:bg-red-950/70"
                 >
                   <Trash2 size={14} />
                   Eliminar
@@ -194,14 +194,14 @@ export default function ManageEventPage() {
 
         {/* Links para compartir */}
         <div className="card space-y-4">
-          <h2 className="font-semibold text-gray-800">Compartir evento</h2>
+          <h2 className="font-semibold text-gray-800 dark:text-gray-200">Compartir evento</h2>
 
           <LinkRow label="Enlace público" value={publicUrl}
             onCopy={() => copy(publicUrl, 'Enlace')}
             href={publicUrl} />
 
           <div>
-            <p className="text-sm text-gray-600 mb-1 font-medium">Código para incrustar (iframe)</p>
+            <p className="text-sm text-gray-600 mb-1 font-medium dark:text-gray-400">Código para incrustar (iframe)</p>
             <div className="flex gap-2 items-start">
               <textarea
                 readOnly
@@ -218,29 +218,29 @@ export default function ManageEventPage() {
 
         {/* Lista de reservas */}
         <div className="card">
-          <h2 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <h2 className="font-semibold text-gray-800 mb-4 flex items-center gap-2 dark:text-gray-200">
             <Users size={18} className="text-primary-600" /> Reservas ({confirmedBookings.length})
           </h2>
 
           {confirmedBookings.length === 0 ? (
-            <p className="text-gray-400 text-sm text-center py-6">Aún no hay reservas.</p>
+            <p className="text-gray-400 text-sm text-center py-6 dark:text-gray-500">Aún no hay reservas.</p>
           ) : (
             <div className="space-y-3">
               {confirmedBookings.map(b => (
-                <div key={b.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg justify-between group">
+                <div key={b.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg justify-between group dark:bg-gray-700/50">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <CheckCircle size={16} className="text-green-500 flex-shrink-0" />
-                      <p className="font-medium text-sm text-gray-900">{b.attendee_name}</p>
+                      <p className="font-medium text-sm text-gray-900 dark:text-gray-100">{b.attendee_name}</p>
                     </div>
-                    <p className="text-xs text-gray-500 ml-6">{b.attendee_email}</p>
+                    <p className="text-xs text-gray-500 ml-6 dark:text-gray-400">{b.attendee_email}</p>
                     {b.extra_guests.length > 0 && (
-                      <p className="text-xs text-gray-400 ml-6 mt-0.5">
+                      <p className="text-xs text-gray-400 ml-6 mt-0.5 dark:text-gray-500">
                         +{b.extra_guests.length} invitado(s): {b.extra_guests.join(', ')}
                       </p>
                     )}
                   </div>
-                  <div className="text-xs text-gray-500 flex-shrink-0 text-right mr-2">
+                  <div className="text-xs text-gray-500 flex-shrink-0 text-right mr-2 dark:text-gray-400">
                     {format(parseISO(b.slot_datetime), "EEE d MMM · h:mm aa", { locale: es })}
                   </div>
                   <button
@@ -256,11 +256,11 @@ export default function ManageEventPage() {
 
           {/* Reservas canceladas */}
           {bookings.filter(b => b.status === 'cancelled').length > 0 && (
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Canceladas</p>
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <p className="text-xs font-semibold text-gray-500 uppercase mb-2 dark:text-gray-400">Canceladas</p>
               <div className="space-y-2">
                 {bookings.filter(b => b.status === 'cancelled').map(b => (
-                  <div key={b.id} className="text-xs text-gray-400 bg-gray-50 p-2 rounded line-through">
+                  <div key={b.id} className="text-xs text-gray-400 bg-gray-50 p-2 rounded line-through dark:bg-gray-700/50 dark:text-gray-500">
                     {b.attendee_name} • {format(parseISO(b.slot_datetime), "d MMM h:mm aa", { locale: es })}
                   </div>
                 ))}
@@ -286,17 +286,17 @@ export default function ManageEventPage() {
       {/* Modal de confirmación de eliminación */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg max-w-sm w-full">
+          <div className="bg-white rounded-lg shadow-lg max-w-sm w-full dark:bg-gray-800">
             <div className="p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-2">¿Eliminar evento?</h3>
-              <p className="text-gray-600 text-sm mb-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-2 dark:text-gray-100">¿Eliminar evento?</h3>
+              <p className="text-gray-600 text-sm mb-4 dark:text-gray-400">
                 Se eliminarán el evento "{event?.title}" y todas sus reservas. Esta acción no se puede deshacer.
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
                   disabled={deleting}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 disabled:opacity-50"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
                 >
                   Cancelar
                 </button>
@@ -319,11 +319,11 @@ export default function ManageEventPage() {
   )
 }
 
-function Stat({ label, value, color = 'text-gray-900' }: { label: string; value: number; color?: string }) {
+function Stat({ label, value, color = 'text-gray-900 dark:text-gray-100' }: { label: string; value: number; color?: string }) {
   return (
-    <div className="bg-gray-50 rounded-lg px-4 py-2 min-w-[70px]">
+    <div className="bg-gray-50 rounded-lg px-4 py-2 min-w-[70px] dark:bg-gray-700/50">
       <p className={`text-2xl font-bold ${color}`}>{value}</p>
-      <p className="text-xs text-gray-500">{label}</p>
+      <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
     </div>
   )
 }
@@ -331,7 +331,7 @@ function Stat({ label, value, color = 'text-gray-900' }: { label: string; value:
 function LinkRow({ label, value, onCopy, href }: { label: string; value: string; onCopy: () => void; href: string }) {
   return (
     <div>
-      <p className="text-sm text-gray-600 mb-1 font-medium">{label}</p>
+      <p className="text-sm text-gray-600 mb-1 font-medium dark:text-gray-400">{label}</p>
       <div className="flex gap-2">
         <input readOnly className="input text-sm flex-1" value={value} />
         <button onClick={onCopy} className="btn-secondary"><Copy size={15} /></button>
@@ -345,7 +345,7 @@ function LinkRow({ label, value, onCopy, href }: { label: string; value: string;
 
 function PageLoader() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center dark:bg-gray-900">
       <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600" />
     </div>
   )
@@ -353,8 +353,8 @@ function PageLoader() {
 
 function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-      <p className="text-gray-500">Evento no encontrado.</p>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4 dark:bg-gray-900">
+      <p className="text-gray-500 dark:text-gray-400">Evento no encontrado.</p>
       <Link to="/" className="btn-primary">Crear nuevo evento</Link>
     </div>
   )

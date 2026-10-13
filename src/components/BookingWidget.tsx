@@ -173,11 +173,11 @@ export default function BookingWidget({ event, slots, onBooked, embedded = false
     return (
       <div className="card text-center space-y-4 max-w-md mx-auto">
         <CheckCircle2 size={48} className="text-green-500 mx-auto" />
-        <h2 className="text-xl font-bold text-gray-900">¡Reserva confirmada!</h2>
-        <p className="text-gray-600 text-sm">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">¡Reserva confirmada!</h2>
+        <p className="text-gray-600 text-sm dark:text-gray-400">
           Hola <strong>{confirmedBooking.attendee_name}</strong>, tu espacio fue reservado para:
         </p>
-        <p className="text-primary-700 font-semibold">
+        <p className="text-primary-700 font-semibold dark:text-primary-400">
           {format(parseISO(confirmedBooking.slot_datetime), "EEEE d 'de' MMMM · h:mm aa", { locale: es })}
         </p>
         {event.location_url && (
@@ -185,12 +185,12 @@ export default function BookingWidget({ event, slots, onBooked, embedded = false
             href={event.location_url}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1 text-primary-600 hover:underline text-sm"
+            className="inline-flex items-center gap-1 text-primary-600 hover:underline text-sm dark:text-primary-400"
           >
             <Link2 size={14} /> Únete a la reunión
           </a>
         )}
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-gray-400 dark:text-gray-500">
           Se ha enviado una confirmación a {confirmedBooking.attendee_email}.
         </p>
         {!embedded && (
@@ -216,14 +216,14 @@ export default function BookingWidget({ event, slots, onBooked, embedded = false
             <button onClick={() => { setStep('select-slot'); setSelected(null) }} className="flex items-center gap-1.5 text-sm text-primary-600 hover:text-primary-800 transition-colors">
               <ArrowLeft size={16} /> Volver a horarios
             </button>
-            <button onClick={() => { setStep('select-slot'); setSelected(null) }} className="text-gray-400 hover:text-gray-600">
+            <button onClick={() => { setStep('select-slot'); setSelected(null) }} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
               <X size={18} />
             </button>
           </div>
 
-          <h2 className="font-semibold text-gray-800">Confirmar reserva</h2>
+          <h2 className="font-semibold text-gray-800 dark:text-gray-200">Confirmar reserva</h2>
 
-          <div className="bg-primary-50 rounded-lg px-4 py-3 text-sm text-primary-800 font-medium">
+          <div className="bg-primary-50 rounded-lg px-4 py-3 text-sm text-primary-800 font-medium dark:bg-primary-950/40 dark:text-primary-300">
             {format(parseISO(selected.datetime), "EEEE d 'de' MMMM · h:mm aa", { locale: es })}
           </div>
 
@@ -237,7 +237,7 @@ export default function BookingWidget({ event, slots, onBooked, embedded = false
               <label className="label">Correo electrónico <span className="text-red-500">*</span></label>
               <input className="input" type="email" placeholder="tu@correo.com" value={form.email}
                 onChange={e => setForm(p => ({ ...p, email: e.target.value }))} />
-              <p className="text-xs text-gray-400 mt-1">Recibirás la confirmación aquí.</p>
+              <p className="text-xs text-gray-400 mt-1 dark:text-gray-500">Recibirás la confirmación aquí.</p>
             </div>
 
             {/* Invitados adicionales */}
@@ -259,7 +259,7 @@ export default function BookingWidget({ event, slots, onBooked, embedded = false
               {form.guests.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">
                   {form.guests.map(g => (
-                    <span key={g} className="flex items-center gap-1 bg-gray-100 text-gray-700 text-xs rounded-full px-2.5 py-1">
+                    <span key={g} className="flex items-center gap-1 bg-gray-100 text-gray-700 text-xs rounded-full px-2.5 py-1 dark:bg-gray-700 dark:text-gray-200">
                       {g}
                       <button type="button" onClick={() => removeGuest(g)} className="text-gray-400 hover:text-red-500">
                         <X size={11} />
@@ -287,7 +287,7 @@ export default function BookingWidget({ event, slots, onBooked, embedded = false
 
       <div className="card">
         {availableSlots.length === 0 ? (
-          <p className="text-gray-500 text-sm text-center py-6">No hay horarios disponibles en este momento.</p>
+          <p className="text-gray-500 text-sm text-center py-6 dark:text-gray-400">No hay horarios disponibles en este momento.</p>
         ) : (
           <SlotGrid slots={availableSlots} onSelect={handleSelectSlot} />
         )}
@@ -301,15 +301,15 @@ export default function BookingWidget({ event, slots, onBooked, embedded = false
 function EventHeader({ event }: { event: Event }) {
   return (
     <div className="card">
-      <h1 className="text-xl font-bold text-gray-900">{event.title}</h1>
-      {event.description && <p className="text-gray-500 text-sm mt-1">{event.description}</p>}
-      <div className="flex items-center gap-1.5 mt-2 text-sm text-gray-600">
+      <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">{event.title}</h1>
+      {event.description && <p className="text-gray-500 text-sm mt-1 dark:text-gray-400">{event.description}</p>}
+      <div className="flex items-center gap-1.5 mt-2 text-sm text-gray-600 dark:text-gray-400">
         <Clock size={14} />
         <span>{event.slot_duration_minutes} minutos por reunión</span>
       </div>
       {event.location_url && (
         <a href={event.location_url} target="_blank" rel="noreferrer"
-          className="inline-flex items-center gap-1 mt-2 text-primary-600 hover:underline text-sm">
+          className="inline-flex items-center gap-1 mt-2 text-primary-600 hover:underline text-sm dark:text-primary-400">
           <Link2 size={13} /> Ver enlace de reunión
         </a>
       )}
@@ -330,7 +330,7 @@ function SlotGrid({ slots, onSelect }: { slots: Slot[]; onSelect: (s: Slot) => v
     <div className="space-y-5">
       {Object.entries(groups).map(([day, daySlots]) => (
         <div key={day}>
-          <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
+          <p className="text-xs font-semibold text-gray-500 uppercase mb-2 dark:text-gray-400">
             {format(parseISO(day), "EEEE d 'de' MMMM", { locale: es })}
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -341,8 +341,8 @@ function SlotGrid({ slots, onSelect }: { slots: Slot[]; onSelect: (s: Slot) => v
                 disabled={!slot.available}
                 className={`rounded-lg border px-3 py-2 text-sm font-medium transition-colors text-center ${
                   slot.available
-                    ? 'border-primary-300 bg-primary-50 text-primary-700 hover:bg-primary-100'
-                    : 'border-gray-200 bg-gray-50 text-gray-300 cursor-not-allowed line-through'
+                    ? 'border-primary-300 bg-primary-50 text-primary-700 hover:bg-primary-100 dark:border-primary-800 dark:bg-primary-950/40 dark:text-primary-300 dark:hover:bg-primary-900/50'
+                    : 'border-gray-200 bg-gray-50 text-gray-300 cursor-not-allowed line-through dark:border-gray-700 dark:bg-gray-800 dark:text-gray-600'
                 }`}
               >
                 {format(parseISO(slot.datetime), 'h:mm aa', { locale: es })}

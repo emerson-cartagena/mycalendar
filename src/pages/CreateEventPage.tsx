@@ -103,26 +103,26 @@ export default function CreateEventPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white dark:from-gray-900 dark:to-gray-900">
       <Header />
 
       <main className="max-w-3xl mx-auto px-4 py-10">
         <button
           onClick={() => navigate('/dashboard')}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6"
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 dark:text-gray-400 dark:hover:text-gray-100"
         >
           <ArrowLeft size={18} /> Volver al dashboard
         </button>
 
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Crear nuevo evento</h1>
-          <p className="text-gray-500 mt-1">Configura tu evento y comparte el enlace para que otros reserven.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Crear nuevo evento</h1>
+          <p className="text-gray-500 mt-1 dark:text-gray-400">Configura tu evento y comparte el enlace para que otros reserven.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Información básica */}
           <div className="card space-y-4">
-            <h2 className="font-semibold text-gray-800 flex items-center gap-2">
+            <h2 className="font-semibold text-gray-800 flex items-center gap-2 dark:text-gray-200">
               <Calendar size={18} className="text-primary-600" /> Información del evento
             </h2>
 
@@ -160,17 +160,17 @@ export default function CreateEventPage() {
                 value={form.location_url}
                 onChange={e => set('location_url', e.target.value)}
               />
-              <p className="text-xs text-gray-400 mt-1">Este enlace se enviará a todos los que reserven.</p>
+              <p className="text-xs text-gray-400 mt-1 dark:text-gray-500">Este enlace se enviará a todos los que reserven.</p>
             </div>
           </div>
 
           {/* Fechas y horario */}
           <div className="card space-y-4">
-            <h2 className="font-semibold text-gray-800 flex items-center gap-2">
+            <h2 className="font-semibold text-gray-800 flex items-center gap-2 dark:text-gray-200">
               <Clock size={18} className="text-primary-600" /> Fechas y horario
             </h2>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="label">Fecha inicio <span className="text-red-500">*</span></label>
                 <input
@@ -192,7 +192,7 @@ export default function CreateEventPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="label">Hora inicio disponible</label>
                 <input
@@ -240,7 +240,7 @@ export default function CreateEventPage() {
                       className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                         active
                           ? 'bg-primary-600 text-white border-primary-600'
-                          : 'bg-white text-gray-600 border-gray-300 hover:border-primary-400'
+                          : 'bg-white text-gray-600 border-gray-300 hover:border-primary-400 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600'
                       }`}
                     >
                       {label}

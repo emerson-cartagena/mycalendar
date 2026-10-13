@@ -188,9 +188,9 @@ export default function EditEventPage() {
   const canEdit = canEditEvent(event)
   if (!canEdit) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="card max-w-md text-center">
-          <p className="text-gray-500">Este evento ya pasó y no puede ser editado.</p>
+          <p className="text-gray-500 dark:text-gray-400">Este evento ya pasó y no puede ser editado.</p>
           <Link to="/dashboard" className="btn-primary mt-4 inline-block">
             Volver al dashboard
           </Link>
@@ -200,22 +200,22 @@ export default function EditEventPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
 
       <main className="max-w-3xl mx-auto px-4 py-8">
         <button
           onClick={() => navigate(`/manage/${eventId}`)}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6"
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 dark:text-gray-400 dark:hover:text-gray-100"
         >
           <ArrowLeft size={18} /> Volver al evento
         </button>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Editar evento</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6 dark:text-gray-100">Editar evento</h1>
         {restrictions.affectsExisting && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 flex gap-3">
-            <AlertCircle className="text-yellow-700 flex-shrink-0 mt-0.5" size={18} />
-            <div className="text-sm text-yellow-700">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 flex gap-3 dark:bg-yellow-950/30 dark:border-yellow-900">
+            <AlertCircle className="text-yellow-700 flex-shrink-0 mt-0.5 dark:text-yellow-500" size={18} />
+            <div className="text-sm text-yellow-700 dark:text-yellow-400">
               <strong>Aviso:</strong> {restrictions.message}
             </div>
           </div>
@@ -223,7 +223,7 @@ export default function EditEventPage() {
 
         <form onSubmit={handleSave} className="space-y-6">
           <div className="card space-y-4">
-            <h2 className="font-semibold text-gray-800">Información</h2>
+            <h2 className="font-semibold text-gray-800 dark:text-gray-200">Información</h2>
             <div>
               <label className="label">Título</label>
               <input
@@ -253,9 +253,9 @@ export default function EditEventPage() {
           </div>
 
           <div className="card space-y-4">
-            <h2 className="font-semibold text-gray-800">Fechas y horario</h2>
+            <h2 className="font-semibold text-gray-800 dark:text-gray-200">Fechas y horario</h2>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="label">
                   Fecha inicio
@@ -284,7 +284,7 @@ export default function EditEventPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="label">Hora inicio</label>
                 <input
@@ -332,7 +332,7 @@ export default function EditEventPage() {
                       className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                         active
                           ? 'bg-primary-600 text-white border-primary-600'
-                          : 'bg-white text-gray-600 border-gray-300 hover:border-primary-400'
+                          : 'bg-white text-gray-600 border-gray-300 hover:border-primary-400 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600'
                       }`}
                     >
                       {label}
@@ -381,7 +381,7 @@ export default function EditEventPage() {
 
 function PageLoader() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
     </div>
   )
@@ -461,8 +461,8 @@ function AvailabilityRulesSection({
   return (
     <div className="card space-y-4">
       <div>
-        <h2 className="font-semibold text-gray-800">Horarios adicionales</h2>
-        <p className="text-sm text-gray-500 mt-0.5">
+        <h2 className="font-semibold text-gray-800 dark:text-gray-200">Horarios adicionales</h2>
+        <p className="text-sm text-gray-500 mt-0.5 dark:text-gray-400">
           Agrega bloques de horario extra dentro del rango del evento (ej. sábados en otro horario,
           o un día suelto fuera del patrón semanal).
         </p>
@@ -471,15 +471,15 @@ function AvailabilityRulesSection({
       {rules.length > 0 && (
         <div className="space-y-2">
           {rules.map(r => (
-            <div key={r.id} className="flex items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg">
-              <div className="text-sm text-gray-700">
+            <div key={r.id} className="flex items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+              <div className="text-sm text-gray-700 dark:text-gray-300">
                 <span className="font-medium">{r.weekdays.map(d => WEEKDAY_LABELS[d]).join(', ')}</span>
                 {' · '}{r.time_start} – {r.time_end}
                 {r.date_start && (
-                  <span className="text-gray-500"> · solo {r.date_start}{r.date_end !== r.date_start ? ` a ${r.date_end}` : ''}</span>
+                  <span className="text-gray-500 dark:text-gray-400"> · solo {r.date_start}{r.date_end !== r.date_start ? ` a ${r.date_end}` : ''}</span>
                 )}
               </div>
-              <button type="button" onClick={() => onDelete(r.id)} className="text-gray-400 hover:text-red-600 flex-shrink-0">
+              <button type="button" onClick={() => onDelete(r.id)} className="text-gray-400 hover:text-red-600 flex-shrink-0 dark:hover:text-red-400">
                 <Trash2 size={16} />
               </button>
             </div>
@@ -487,7 +487,7 @@ function AvailabilityRulesSection({
         </div>
       )}
 
-      <div className="border-t border-gray-100 pt-4 space-y-3">
+      <div className="border-t border-gray-100 pt-4 space-y-3 dark:border-gray-700">
         <div>
           <label className="label">Días</label>
           <div className="flex gap-2 flex-wrap mt-1">
@@ -502,7 +502,7 @@ function AvailabilityRulesSection({
                   className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                     active
                       ? 'bg-primary-600 text-white border-primary-600'
-                      : 'bg-white text-gray-600 border-gray-300 hover:border-primary-400'
+                      : 'bg-white text-gray-600 border-gray-300 hover:border-primary-400 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600'
                   }`}
                 >
                   {label}
@@ -512,7 +512,7 @@ function AvailabilityRulesSection({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="label">Hora inicio</label>
             <input
@@ -555,7 +555,7 @@ function AvailabilityRulesSection({
               className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
                 draft.scope === 'range'
                   ? 'bg-primary-600 text-white border-primary-600'
-                  : 'bg-white text-gray-600 border-gray-300'
+                  : 'bg-white text-gray-600 border-gray-300 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600'
               }`}
             >
               Todo el rango del evento
@@ -566,7 +566,7 @@ function AvailabilityRulesSection({
               className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
                 draft.scope === 'date'
                   ? 'bg-primary-600 text-white border-primary-600'
-                  : 'bg-white text-gray-600 border-gray-300'
+                  : 'bg-white text-gray-600 border-gray-300 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600'
               }`}
             >
               Solo una fecha específica
@@ -642,8 +642,8 @@ function DateOverridesSection({
   return (
     <div className="card space-y-4">
       <div>
-        <h2 className="font-semibold text-gray-800">Excepciones por fecha</h2>
-        <p className="text-sm text-gray-500 mt-0.5">
+        <h2 className="font-semibold text-gray-800 dark:text-gray-200">Excepciones por fecha</h2>
+        <p className="text-sm text-gray-500 mt-0.5 dark:text-gray-400">
           Para un día en concreto ya cubierto por el patrón, define un horario distinto o bloquéalo por completo.
         </p>
       </div>
@@ -651,16 +651,16 @@ function DateOverridesSection({
       {overrides.length > 0 && (
         <div className="space-y-2">
           {overrides.map(o => (
-            <div key={o.id} className="flex items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg">
-              <div className="text-sm text-gray-700 flex items-center gap-2">
+            <div key={o.id} className="flex items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+              <div className="text-sm text-gray-700 flex items-center gap-2 dark:text-gray-300">
                 <span className="font-medium">{o.date}</span>
                 {o.is_blocked ? (
-                  <span className="text-red-600 flex items-center gap-1"><Ban size={14} /> Bloqueado</span>
+                  <span className="text-red-600 flex items-center gap-1 dark:text-red-400"><Ban size={14} /> Bloqueado</span>
                 ) : (
                   <span>{o.time_start} – {o.time_end}</span>
                 )}
               </div>
-              <button type="button" onClick={() => onDelete(o.id)} className="text-gray-400 hover:text-red-600 flex-shrink-0">
+              <button type="button" onClick={() => onDelete(o.id)} className="text-gray-400 hover:text-red-600 flex-shrink-0 dark:hover:text-red-400">
                 <Trash2 size={16} />
               </button>
             </div>
@@ -668,7 +668,7 @@ function DateOverridesSection({
         </div>
       )}
 
-      <div className="border-t border-gray-100 pt-4 space-y-3">
+      <div className="border-t border-gray-100 pt-4 space-y-3 dark:border-gray-700">
         <div>
           <label className="label">Fecha</label>
           <input
@@ -688,7 +688,7 @@ function DateOverridesSection({
             className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
               mode === 'custom'
                 ? 'bg-primary-600 text-white border-primary-600'
-                : 'bg-white text-gray-600 border-gray-300'
+                : 'bg-white text-gray-600 border-gray-300 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600'
             }`}
           >
             Horario personalizado
@@ -699,7 +699,7 @@ function DateOverridesSection({
             className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
               mode === 'blocked'
                 ? 'bg-red-600 text-white border-red-600'
-                : 'bg-white text-gray-600 border-gray-300'
+                : 'bg-white text-gray-600 border-gray-300 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600'
             }`}
           >
             Bloquear día
@@ -708,7 +708,7 @@ function DateOverridesSection({
 
         {mode === 'custom' && (
           <>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="label">Hora inicio</label>
                 <input className="input" type="time" value={timeStart} onChange={e => setTimeStart(e.target.value)} />
